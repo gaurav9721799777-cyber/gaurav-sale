@@ -1,0 +1,52 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 920 620" fill="none">
+  <defs>
+    <linearGradient id="inverter-front" x1="138" y1="125" x2="416" y2="490" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#fff"/>
+      <stop offset="1" stop-color="#e7edf3"/>
+    </linearGradient>
+    <linearGradient id="inverter-side" x1="419" y1="160" x2="490" y2="478" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#dce4eb"/>
+      <stop offset="1" stop-color="#bbc8d3"/>
+    </linearGradient>
+    <linearGradient id="battery-front" x1="534" y1="250" x2="740" y2="520" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#fff"/>
+      <stop offset="1" stop-color="#e5ebf1"/>
+    </linearGradient>
+    <linearGradient id="battery-side" x1="740" y1="273" x2="791" y2="507" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#dce4eb"/>
+      <stop offset="1" stop-color="#bac7d2"/>
+    </linearGradient>
+    <filter id="product-shadow" x="76" y="430" width="758" height="151" color-interpolation-filters="sRGB" filterUnits="userSpaceOnUse">
+      <feGaussianBlur stdDeviation="18"/>
+    </filter>
+  </defs>
+  <ellipse cx="470" cy="505" fill="#071b37" opacity=".32" rx="356" ry="45" filter="url(#product-shadow)"/>
+  <path d="m416 131 69 25v332l-69 21V131Z" fill="url(#inverter-side)" stroke="#b9c6d1" stroke-width="2"/>
+  <path d="M145 113c0-17 13-30 30-30h211c17 0 30 13 30 30v356H145V113Z" fill="url(#inverter-front)" stroke="#d8e1e9" stroke-width="3"/>
+  <path d="M163 110c0-7 6-13 13-13h207c7 0 13 6 13 13v21H163v-21Z" fill="#fff" opacity=".82"/>
+  <path d="M193 152h177" stroke="#d7e0e7" stroke-width="2"/>
+  <rect x="218" y="174" width="142" height="91" rx="15" fill="#102b4e"/>
+  <rect x="229" y="185" width="120" height="69" rx="10" fill="#16385d"/>
+  <path d="M244 225h22l11-19 14 32 13-23h29" stroke="#92f1d5" stroke-linecap="round" stroke-linejoin="round" stroke-width="5"/>
+  <circle cx="188" cy="194" r="6" fill="#54c593"/>
+  <circle cx="188" cy="216" r="6" fill="#e8bd71"/>
+  <text x="264" y="300" fill="#26425f" font-family="Arial,sans-serif" font-size="14" font-weight="700" letter-spacing="2">HOME INVERTER</text>
+  <path d="M190 321h180" stroke="#d4dde5" stroke-width="2"/>
+  <rect x="190" y="344" width="180" height="77" rx="10" fill="#e8eef3"/>
+  <text x="280" y="372" fill="#7b8c9b" font-family="Arial,sans-serif" font-size="10" letter-spacing="1.5" text-anchor="middle">SMART POWER</text>
+  <text x="280" y="402" fill="#244363" font-family="Arial,sans-serif" font-size="20" font-weight="700" text-anchor="middle">PURE SINE WAVE</text>
+  <path d="M158 462h254" stroke="#d9e2e9" stroke-width="2"/>
+  <path d="m739 250 50 19v239l-50 15V250Z" fill="url(#battery-side)" stroke="#b8c5d1" stroke-width="2"/>
+  <path d="M526 237c0-14 11-25 25-25h164c14 0 25 11 25 25v272H526V237Z" fill="url(#battery-front)" stroke="#d5dfe7" stroke-width="3"/>
+  <path d="M545 212h34v-14c0-6 5-11 11-11h22c6 0 11 5 11 11v14h40v-14c0-6 5-11 11-11h22c6 0 11 5 11 11v14h19" stroke="#d6e0e8" stroke-width="9" stroke-linecap="round"/>
+  <rect x="557" y="264" width="151" height="127" rx="12" fill="#f4f7fa" stroke="#dce4eb" stroke-width="2"/>
+  <text x="632" y="292" fill="#74879a" font-family="Arial,sans-serif" font-size="10" font-weight="700" letter-spacing="2" text-anchor="middle">BATTERY</text>
+  <text x="632" y="322" fill="#244363" font-family="Arial,sans-serif" font-size="18" font-weight="700" text-anchor="middle">TUBULAR</text>
+  <path d="M578 340h108" stroke="#d5dfe7" stroke-width="2"/>
+  <path d="M579 359h84" stroke="#d5dfe7" stroke-linecap="round" stroke-width="4"/>
+  <rect x="576" y="411" width="101" height="13" rx="6.5" fill="#d8e1e8"/>
+  <rect x="576" y="436" width="77" height="13" rx="6.5" fill="#d8e1e8"/>
+  <circle cx="685" cy="445" r="6" fill="#57bf91"/>
+  <path d="M548 489h178" stroke="#d7e0e8" stroke-width="2"/>
+  <path d="M165 477h247v13H165zM538 502h187v13H538z" fill="#d8e1e8"/>
+</svg>

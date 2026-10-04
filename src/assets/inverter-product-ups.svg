@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 600" fill="none">
+  <defs><linearGradient id="bg" x1="0" y1="0" x2="900" y2="600" gradientUnits="userSpaceOnUse"><stop stop-color="#e7edf0"/><stop offset="1" stop-color="#c6d4d8"/></linearGradient><linearGradient id="unit" x1="320" y1="100" x2="610" y2="495" gradientUnits="userSpaceOnUse"><stop stop-color="#f5f7f7"/><stop offset="1" stop-color="#cbd5d9"/></linearGradient><linearGradient id="batt" x1="440" y1="410" x2="630" y2="550" gradientUnits="userSpaceOnUse"><stop stop-color="#344c68"/><stop offset="1" stop-color="#172a42"/></linearGradient><filter id="s" x="190" y="462" width="548" height="120"><feGaussianBlur stdDeviation="21"/></filter></defs>
+  <path fill="url(#bg)" d="M0 0h900v600H0z"/><path fill="#f7f5ec" d="M0 0h254v600H0z"/><path fill="#c1d5d3" d="M38 57h179v221H38z"/><path fill="#dfebe6" d="M51 71h153v194H51z"/><path stroke="#fbf8ed" stroke-width="9" d="M128 71v194M51 168h153"/>
+  <ellipse cx="476" cy="511" fill="#203448" opacity=".22" rx="235" ry="26" filter="url(#s)"/>
+  <rect x="298" y="101" width="306" height="348" rx="27" fill="url(#unit)" stroke="#b8c6cc" stroke-width="3"/><rect x="320" y="122" width="262" height="210" rx="14" fill="#fbfcfc"/>
+  <rect x="359" y="143" width="184" height="78" rx="11" fill="#172f4d"/><rect x="371" y="154" width="160" height="56" rx="6" fill="#6ed4c9"/><path stroke="#d8fff3" stroke-linecap="round" stroke-width="4" d="M385 188h20l10-17 12 29 12-18h70"/>
+  <text x="451" y="263" fill="#294560" font-family="Arial,sans-serif" font-size="18" font-weight="700" text-anchor="middle">UPS / INVERTER</text><text x="451" y="285" fill="#82919a" font-family="Arial,sans-serif" font-size="9" letter-spacing="2" text-anchor="middle">UNINTERRUPTED HOME POWER</text>
+  <path stroke="#d2dce0" stroke-width="2" d="M341 305h218"/><circle cx="366" cy="358" r="8" fill="#57bb8e"/><circle cx="398" cy="358" r="8" fill="#dfb871"/><circle cx="430" cy="358" r="8" fill="#d0dce0"/><text x="471" y="362" fill="#70828e" font-family="Arial,sans-serif" font-size="10">SYSTEM READY</text>
+  <rect x="355" y="410" width="263" height="134" rx="20" fill="url(#batt)" stroke="#5a7085" stroke-width="3"/><rect x="379" y="430" width="215" height="8" rx="4" fill="#7d90a0"/>
+  <rect x="390" y="454" width="193" height="52" rx="9" fill="#101f33"/><rect x="401" y="463" width="171" height="34" rx="6" fill="#67ceac"/><path stroke="#ddfff3" stroke-linecap="round" stroke-width="3" d="M416 486h18l9-10 10 17 10-12h84"/>
+  <text x="486" y="528" fill="#f0f5f6" font-family="Arial,sans-serif" font-size="10" font-weight="700" text-anchor="middle">BACKUP BATTERY</text>
+  <path fill="#9daeb4" d="M327 449h20v14h-20z"/><path fill="#a4b2b7" d="M90 548h720v52H90z" opacity=".25"/>
+</svg>

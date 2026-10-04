@@ -1,0 +1,50 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1800 820" fill="none">
+  <defs>
+    <linearGradient id="bg" x1="830" y1="0" x2="1640" y2="820" gradientUnits="userSpaceOnUse"><stop stop-color="#d9e8e7"/><stop offset=".52" stop-color="#a9c2c4"/><stop offset="1" stop-color="#718b9a"/></linearGradient>
+    <linearGradient id="wall" x1="950" y1="100" x2="1500" y2="800" gradientUnits="userSpaceOnUse"><stop stop-color="#f4f2e9"/><stop offset="1" stop-color="#c9d2d0"/></linearGradient>
+    <linearGradient id="device" x1="1050" y1="310" x2="1500" y2="670" gradientUnits="userSpaceOnUse"><stop stop-color="#fff"/><stop offset="1" stop-color="#d8e0e5"/></linearGradient>
+    <linearGradient id="battery" x1="1470" y1="540" x2="1630" y2="770" gradientUnits="userSpaceOnUse"><stop stop-color="#243b5b"/><stop offset="1" stop-color="#101f34"/></linearGradient>
+    <filter id="shadow" x="980" y="250" width="700" height="580" color-interpolation-filters="sRGB" filterUnits="userSpaceOnUse"><feGaussianBlur stdDeviation="22"/></filter>
+  </defs>
+  <path fill="url(#bg)" d="M0 0h1800v820H0z"/>
+  <path fill="#657c74" d="M133 0h110v820H133z" opacity=".34"/>
+  <path fill="#233b44" d="M260 0h20v820h-20z" opacity=".45"/>
+  <path fill="#d7e2df" d="M294 0h292v366H294z" opacity=".75"/>
+  <path stroke="#f7f7ef" stroke-width="16" d="M439 0v366M294 180h292"/>
+  <path fill="#748983" d="M285 364h320v456H285z" opacity=".3"/>
+  <path fill="url(#wall)" d="M612 0h1188v820H612z"/>
+  <path fill="#b6c4c0" d="M727 0h11v820h-11z" opacity=".6"/>
+  <path fill="#77928d" d="M710 0h28v176c-49-83-63-121-28-176Z" opacity=".55"/>
+  <path fill="#334e4e" d="M676 80c45 14 80 72 103 133-54-46-93-62-103-133Zm-28 135c53 3 103 48 144 99-68-26-108-27-144-99Z" opacity=".43"/>
+  <path fill="#7f8a80" d="M589 667h1211v153H589z" opacity=".27"/>
+  <path fill="#8d7962" d="M830 635h239v10H830z" opacity=".65"/>
+  <path fill="#c3a783" d="M861 645h179v85H861z" opacity=".55"/>
+  <ellipse cx="1333" cy="734" fill="#263344" opacity=".24" rx="296" ry="37" filter="url(#shadow)"/>
+  <rect x="1040" y="262" width="405" height="364" rx="34" fill="#8f9ea4" opacity=".25"/>
+  <rect x="1024" y="244" width="405" height="364" rx="34" fill="url(#device)" stroke="#b4c2c9" stroke-width="3"/>
+  <path fill="#f7fafb" d="M1057 280c0-7 6-13 13-13h313c7 0 13 6 13 13v288h-339V280Z"/>
+  <rect x="1175" y="296" width="103" height="66" rx="10" fill="#122b4e"/>
+  <rect x="1185" y="306" width="83" height="44" rx="5" fill="#77d3d2"/>
+  <path stroke="#c8fff0" stroke-linecap="round" stroke-width="5" d="M1199 332h15l8-14 10 22 8-12h15"/>
+  <circle cx="1079" cy="312" r="5" fill="#77b889"/><circle cx="1097" cy="312" r="5" fill="#e6bc75"/>
+  <text x="1226" y="401" fill="#274362" font-family="Arial,sans-serif" font-size="19" font-weight="700" text-anchor="middle">HOME INVERTER</text>
+  <text x="1226" y="425" fill="#82909a" font-family="Arial,sans-serif" font-size="12" letter-spacing="3" text-anchor="middle">SMART POWER SYSTEM</text>
+  <path fill="#aebbc3" d="M1080 477h289v1h-289z"/>
+  <circle cx="1102" cy="523" r="11" fill="#edf4f6" stroke="#b3c1c7" stroke-width="2"/>
+  <circle cx="1141" cy="523" r="11" fill="#edf4f6" stroke="#b3c1c7" stroke-width="2"/>
+  <circle cx="1180" cy="523" r="11" fill="#edf4f6" stroke="#b3c1c7" stroke-width="2"/>
+  <rect x="1474" y="390" width="58" height="168" rx="17" fill="#f7f8f6" stroke="#c2ccce" stroke-width="2"/>
+  <path stroke="#d0d8d9" stroke-width="5" d="M1488 417h30M1488 432h30M1488 447h30"/>
+  <rect x="1462" y="548" width="205" height="238" rx="24" fill="url(#battery)" stroke="#49627b" stroke-width="3"/>
+  <rect x="1486" y="568" width="157" height="8" rx="4" fill="#536d83"/>
+  <rect x="1513" y="596" width="103" height="49" rx="8" fill="#111e30"/>
+  <rect x="1524" y="606" width="81" height="28" rx="4" fill="#6dd2b0"/>
+  <path stroke="#d5fff1" stroke-linecap="round" stroke-width="3" d="M1534 622h12l7-9 8 16 7-10h20"/>
+  <text x="1564" y="679" fill="#e9f0f4" font-family="Arial,sans-serif" font-size="12" font-weight="700" text-anchor="middle">LITHIUM BATTERY</text>
+  <text x="1564" y="699" fill="#a9bdcb" font-family="Arial,sans-serif" font-size="9" letter-spacing="2" text-anchor="middle">ENERGY STORAGE</text>
+  <path fill="#d8e2e2" d="M1488 724h152v2h-152z"/>
+  <circle cx="1518" cy="751" r="4" fill="#61d2a1"/><circle cx="1534" cy="751" r="4" fill="#61d2a1"/>
+  <path stroke="#52616a" stroke-width="5" d="M1450 452h24m-24 61h24"/>
+  <path fill="#304c49" d="M1714 0h18v340h-18z" opacity=".6"/>
+  <path fill="#45615a" d="M1663 77c56 11 98 65 137 118-65-30-100-34-137-118Zm31 155c45-15 96 9 148 39-66-6-103 4-148-39Z" opacity=".35"/>
+</svg>

@@ -1,0 +1,32 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 620" fill="none">
+  <defs>
+    <linearGradient id="battery-front" x1="278" y1="142" x2="491" y2="520" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#fff"/>
+      <stop offset="1" stop-color="#e5ebf1"/>
+    </linearGradient>
+    <linearGradient id="battery-side" x1="491" y1="168" x2="553" y2="510" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#e0e7ed"/>
+      <stop offset="1" stop-color="#bcc9d4"/>
+    </linearGradient>
+    <filter id="battery-shadow" x="133" y="468" width="516" height="103" color-interpolation-filters="sRGB" filterUnits="userSpaceOnUse">
+      <feGaussianBlur stdDeviation="17"/>
+    </filter>
+  </defs>
+  <ellipse cx="390" cy="508" fill="#071b37" opacity=".32" rx="223" ry="31" filter="url(#battery-shadow)"/>
+  <path d="m491 147 62 23v335l-62 20V147Z" fill="url(#battery-side)" stroke="#b9c6d1" stroke-width="2"/>
+  <path d="M252 130c0-17 13-30 30-30h179c17 0 30 13 30 30v373H252V130Z" fill="url(#battery-front)" stroke="#d6e0e8" stroke-width="3"/>
+  <path d="M274 98h37V82c0-7 6-13 13-13h27c7 0 13 6 13 13v16h39V82c0-7 6-13 13-13h27c7 0 13 6 13 13v16h25" stroke="#d6e0e8" stroke-width="10" stroke-linecap="round"/>
+  <path d="M275 148h191" stroke="#dce4eb" stroke-width="2"/>
+  <rect x="294" y="177" width="151" height="149" rx="14" fill="#f3f6f9" stroke="#dce4eb" stroke-width="2"/>
+  <path d="M317 204h104" stroke="#d7e0e8" stroke-width="3"/>
+  <text x="369" y="245" fill="#294765" font-family="Arial,sans-serif" font-size="17" font-weight="700" letter-spacing="2" text-anchor="middle">POWER</text>
+  <text x="369" y="275" fill="#71869a" font-family="Arial,sans-serif" font-size="12" font-weight="700" letter-spacing="2" text-anchor="middle">TUBULAR BATTERY</text>
+  <circle cx="321" cy="299" r="5" fill="#5ac393"/>
+  <path d="M337 299h74" stroke="#cbd6df" stroke-linecap="round" stroke-width="4"/>
+  <path d="M299 354h141" stroke="#dce4eb" stroke-width="2"/>
+  <rect x="304" y="377" width="119" height="14" rx="7" fill="#d9e2e9"/>
+  <rect x="304" y="405" width="93" height="14" rx="7" fill="#d9e2e9"/>
+  <rect x="304" y="433" width="109" height="14" rx="7" fill="#d9e2e9"/>
+  <path d="M274 481h192" stroke="#d7e0e8" stroke-width="2"/>
+  <path d="M270 508h196v14H270z" fill="#d8e1e8"/>
+</svg>

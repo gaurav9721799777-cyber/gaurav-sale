@@ -1,0 +1,45 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1800 820" fill="none">
+  <defs>
+    <linearGradient id="room" x1="920" y1="0" x2="1540" y2="820" gradientUnits="userSpaceOnUse"><stop stop-color="#dbe5e3"/><stop offset=".52" stop-color="#b4c9c6"/><stop offset="1" stop-color="#879b9c"/></linearGradient>
+    <linearGradient id="ups" x1="1050" y1="235" x2="1350" y2="745" gradientUnits="userSpaceOnUse"><stop stop-color="#fbfcfb"/><stop offset="1" stop-color="#cbd7db"/></linearGradient>
+    <linearGradient id="batt" x1="1415" y1="395" x2="1660" y2="760" gradientUnits="userSpaceOnUse"><stop stop-color="#374e69"/><stop offset="1" stop-color="#16283f"/></linearGradient>
+    <filter id="shade" x="958" y="628" width="773" height="220" color-interpolation-filters="sRGB" filterUnits="userSpaceOnUse"><feGaussianBlur stdDeviation="24"/></filter>
+  </defs>
+  <path fill="url(#room)" d="M0 0h1800v820H0z"/>
+  <path fill="#e4e6dc" d="M0 0h680v820H0z"/>
+  <path fill="#b5c7c1" d="M81 88h480v330H81z"/>
+  <path fill="#d7e4dc" d="M99 107h444v293H99z"/>
+  <path stroke="#f9f5e9" stroke-width="15" d="M321 107v293M99 254h444"/>
+  <path fill="#8c9c88" d="M0 0h58v820H0z" opacity=".5"/>
+  <path fill="#6b7e70" d="M80 420h481v35H80z" opacity=".34"/>
+  <path fill="#ecede6" d="M680 0h1120v820H680z"/>
+  <path fill="#c6d2ce" d="M698 0h12v820h-12z"/>
+  <path fill="#a1b4af" d="M1720 0h80v820h-80z" opacity=".35"/>
+  <path fill="#c0aa8f" d="M580 700h1220v120H580z" opacity=".42"/>
+  <ellipse cx="1360" cy="742" fill="#203449" opacity=".25" rx="365" ry="32" filter="url(#shade)"/>
+  <rect x="1037" y="227" width="315" height="512" rx="29" fill="#8e9fa8" opacity=".3"/>
+  <rect x="1018" y="210" width="315" height="512" rx="29" fill="url(#ups)" stroke="#bbc9cf" stroke-width="3"/>
+  <path fill="#fbfcfc" d="M1048 240c0-7 6-13 13-13h229c7 0 13 6 13 13v373h-255V240Z"/>
+  <rect x="1090" y="258" width="170" height="101" rx="13" fill="#152d4d"/>
+  <rect x="1102" y="270" width="146" height="77" rx="7" fill="#78d5cc"/>
+  <path stroke="#d9fff5" stroke-linecap="round" stroke-width="5" d="M1118 317h24l12-23 15 39 12-23h51"/>
+  <text x="1175" y="397" fill="#284460" font-family="Arial,sans-serif" font-size="18" font-weight="700" text-anchor="middle">HOME UPS</text>
+  <text x="1175" y="419" fill="#87959e" font-family="Arial,sans-serif" font-size="10" letter-spacing="2" text-anchor="middle">POWER BACKUP SYSTEM</text>
+  <path stroke="#c6d1d5" stroke-width="2" d="M1065 449h221"/>
+  <rect x="1071" y="474" width="208" height="92" rx="11" fill="#e7edef"/>
+  <text x="1175" y="501" fill="#5d7482" font-family="Arial,sans-serif" font-size="10" text-anchor="middle">OUTPUT CAPACITY</text>
+  <text x="1175" y="540" fill="#19385b" font-family="Arial,sans-serif" font-size="29" font-weight="700" text-anchor="middle">5.0 kW</text>
+  <circle cx="1090" cy="641" r="7" fill="#62b993"/><circle cx="1114" cy="641" r="7" fill="#e1bb70"/>
+  <path fill="#9eaeb5" d="M1328 344h76v10h-76z"/>
+  <path fill="url(#batt)" d="M1415 386c0-16 13-29 29-29h190c16 0 29 13 29 29v342c0 16-13 29-29 29h-190c-16 0-29-13-29-29V386Z" stroke="#596f86" stroke-width="3"/>
+  <rect x="1450" y="390" width="178" height="14" rx="7" fill="#768b9d"/>
+  <rect x="1451" y="430" width="176" height="80" rx="11" fill="#0b1b2c"/>
+  <rect x="1463" y="441" width="152" height="58" rx="7" fill="#6bd0b4"/>
+  <path stroke="#ddfff3" stroke-linecap="round" stroke-width="4" d="M1482 478h19l12-19 12 29 13-19h51"/>
+  <text x="1539" y="554" fill="#e8f0f4" font-family="Arial,sans-serif" font-size="14" font-weight="700" text-anchor="middle">BACKUP BATTERY</text>
+  <text x="1539" y="575" fill="#9aafbd" font-family="Arial,sans-serif" font-size="9" letter-spacing="2" text-anchor="middle">READY WHEN YOU NEED IT</text>
+  <path stroke="#63788c" stroke-width="2" d="M1449 601h179m-179 64h179"/>
+  <circle cx="1471" cy="632" r="5" fill="#5bd1a1"/><circle cx="1490" cy="632" r="5" fill="#5bd1a1"/>
+  <path fill="#213953" d="M1437 755h205v16h-205z"/>
+  <path fill="#748977" d="M761 90c50-65 98-77 152-85-19 67-66 111-150 132 33-18 35-30-2-47Zm45 134c57-34 110-31 164-17-51 55-109 75-194 54 37-3 43-14 30-37Z" opacity=".42"/>
+</svg>

@@ -1,0 +1,11 @@
+{
+  "short_name": "Gaurav Sales",
+  "name": "Gaurav Sales | Inverters & Solar Power",
+  "icons": [
+    { "src": "app-icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any" }
+  ],
+  "start_url": ".",
+  "display": "standalone",
+  "theme_color": "#3158b8",
+  "background_color": "#ffffff"
+}

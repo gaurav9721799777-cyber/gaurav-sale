@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 600" fill="none">
+  <defs><linearGradient id="bg" x1="0" y1="0" x2="900" y2="600" gradientUnits="userSpaceOnUse"><stop stop-color="#e9edf4"/><stop offset="1" stop-color="#c8d5e1"/></linearGradient><linearGradient id="bat" x1="445" y1="130" x2="620" y2="500" gradientUnits="userSpaceOnUse"><stop stop-color="#354d6a"/><stop offset="1" stop-color="#13263e"/></linearGradient><filter id="s" x="229" y="438" width="511" height="120"><feGaussianBlur stdDeviation="21"/></filter></defs>
+  <path fill="url(#bg)" d="M0 0h900v600H0z"/><path fill="#f5f4ed" d="M0 0h255v600H0z"/><path fill="#c4d5d4" d="M30 60h185v228H30z"/><path fill="#deebe7" d="M43 73h159v201H43z"/><path stroke="#fbf8ef" stroke-width="9" d="M123 73v201M43 173h159"/>
+  <ellipse cx="480" cy="486" fill="#1c3048" opacity=".23" rx="222" ry="28" filter="url(#s)"/>
+  <rect x="289" y="120" width="254" height="359" rx="25" fill="#fafbfb" stroke="#c1ccd2" stroke-width="3"/><rect x="311" y="143" width="210" height="209" rx="14" fill="#fff"/>
+  <rect x="346" y="161" width="140" height="70" rx="10" fill="#142c4a"/><rect x="357" y="172" width="118" height="48" rx="5" fill="#6fd2c7"/><path stroke="#ddfff2" stroke-linecap="round" stroke-width="4" d="M369 202h17l9-16 11 26 10-17h42"/>
+  <text x="416" y="271" fill="#284562" font-family="Arial,sans-serif" font-size="16" font-weight="700" text-anchor="middle">HYBRID INVERTER</text><text x="416" y="291" fill="#82909b" font-family="Arial,sans-serif" font-size="9" letter-spacing="2" text-anchor="middle">POWER MANAGEMENT</text>
+  <path stroke="#d5dde1" stroke-width="2" d="M331 312h170"/><rect x="326" y="374" width="178" height="70" rx="9" fill="#e9eff2"/><text x="415" y="402" fill="#65788a" font-family="Arial,sans-serif" font-size="9" text-anchor="middle">CHARGE STATUS</text><rect x="348" y="415" width="135" height="12" rx="6" fill="#cbd8df"/><rect x="348" y="415" width="102" height="12" rx="6" fill="#62bd95"/>
+  <rect x="542" y="259" width="172" height="237" rx="24" fill="url(#bat)" stroke="#566d83" stroke-width="3"/><rect x="564" y="280" width="128" height="8" rx="4" fill="#7c8fa0"/>
+  <rect x="564" y="309" width="128" height="53" rx="8" fill="#0b1a2b"/><rect x="574" y="318" width="108" height="36" rx="5" fill="#68d1b0"/><path stroke="#d6fff0" stroke-linecap="round" stroke-width="3" d="M585 340h14l8-11 9 19 8-12h41"/>
+  <text x="628" y="395" fill="#e8f0f5" font-family="Arial,sans-serif" font-size="12" font-weight="700" text-anchor="middle">LITHIUM</text><text x="628" y="414" fill="#a8bac8" font-family="Arial,sans-serif" font-size="8" letter-spacing="2" text-anchor="middle">BATTERY STORAGE</text>
+  <path stroke="#60758a" stroke-width="2" d="M565 438h126"/><circle cx="583" cy="461" r="4" fill="#60d1a0"/><circle cx="598" cy="461" r="4" fill="#60d1a0"/>
+  <path fill="#acbac2" d="M324 479h190v9H324z"/><path fill="#9aabaf" d="M90 524h720v76H90z" opacity=".23"/>
+</svg>

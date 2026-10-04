@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 600" fill="none">
+  <defs><linearGradient id="bg" x1="0" y1="0" x2="900" y2="600" gradientUnits="userSpaceOnUse"><stop stop-color="#e8edf1"/><stop offset="1" stop-color="#cbd8df"/></linearGradient><linearGradient id="body" x1="340" y1="100" x2="600" y2="515" gradientUnits="userSpaceOnUse"><stop stop-color="#fff"/><stop offset="1" stop-color="#d5dfe5"/></linearGradient><filter id="s" x="220" y="420" width="490" height="120"><feGaussianBlur stdDeviation="22"/></filter></defs>
+  <path fill="url(#bg)" d="M0 0h900v600H0z"/><path fill="#f7f6ef" d="M0 0h270v600H0z"/><path fill="#c2d2d3" d="M35 55h190v238H35z"/><path fill="#d8e8e6" d="M48 69h164v210H48z"/><path stroke="#f8f5eb" stroke-width="9" d="M130 69v210M48 174h164"/>
+  <ellipse cx="465" cy="475" fill="#1a3551" opacity=".22" rx="208" ry="30" filter="url(#s)"/>
+  <rect x="306" y="83" width="287" height="398" rx="28" fill="url(#body)" stroke="#b9c7cf" stroke-width="3"/><rect x="329" y="106" width="241" height="260" rx="16" fill="#fbfcfc"/>
+  <rect x="379" y="130" width="143" height="79" rx="11" fill="#142c4b"/><rect x="391" y="141" width="119" height="57" rx="6" fill="#74d5cb"/><path stroke="#d5fff1" stroke-linecap="round" stroke-width="4" d="M402 175h18l10-17 11 28 11-17h46"/>
+  <text x="450" y="252" fill="#264360" font-family="Arial,sans-serif" font-size="19" font-weight="700" text-anchor="middle">HOME INVERTER</text><text x="450" y="275" fill="#83919d" font-family="Arial,sans-serif" font-size="10" letter-spacing="2" text-anchor="middle">PURE SINE WAVE</text>
+  <path stroke="#d2dbe0" stroke-width="2" d="M350 300h201"/><circle cx="371" cy="331" r="7" fill="#5cbb8d"/><circle cx="400" cy="331" r="7" fill="#e5bd72"/><circle cx="429" cy="331" r="7" fill="#d9e1e5"/>
+  <rect x="350" y="389" width="201" height="56" rx="10" fill="#e9eff2"/><text x="450" y="423" fill="#597084" font-family="Arial,sans-serif" font-size="12" font-weight="700" text-anchor="middle">SMART ENERGY CONTROL</text>
+  <path fill="#a9b8c0" d="M364 480h172v9H364z"/><path fill="#9aabaf" d="M90 524h720v76H90z" opacity=".25"/>
+</svg>
