@@ -8,3 +8,5 @@
   button, input, textarea { font: inherit; }
   *, *::before, *::after { box-sizing: border-box; }
 }
+
+.infinite-scroll-trigger { min-height: 28px; padding: 8px 0; color: #778196; font-size: 12px; text-align: center; }

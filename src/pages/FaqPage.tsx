@@ -3,7 +3,6 @@ import { Accordion, Button } from "@mantine/core";
 import { IconArrowRight, IconBolt } from "@tabler/icons-react";
 import PageHeading from "../components/PageHeading";
 import type { RoutePath } from "../Route/AppRoutes";
-import inverterBanner from "../assets/inverter-hero-backup.svg";
 
 const questions = [
   ["How do I choose the right inverter size?", "Start with the appliances you need to run and their combined power demand. If you’re unsure, contact us with your appliance list and we can help you compare capacities."],
@@ -22,7 +21,6 @@ export default function FaqPage({ navigate }: FaqPageProps) {
         eyebrow="HELP CENTER"
         title={<>Good questions. <em>Clear answers.</em></>}
         description="A few helpful details on choosing, ordering, delivery, and paying for your inverter."
-        image={inverterBanner}
       />
       <div className="gs-faq-layout">
         <aside className="gs-faq-aside"><span><IconBolt size={25} /></span><h2>Need a little more help?</h2><p>Our team can help you understand your options before you order.</p><Button className="gs-button" onClick={() => navigate("/contact")}>Contact us <IconArrowRight size={16} /></Button></aside>

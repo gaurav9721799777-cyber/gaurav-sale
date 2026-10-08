@@ -1,7 +1,6 @@
 import React from "react";
 import { IconArrowUpRight, IconMail, IconMapPin, IconPhone } from "@tabler/icons-react";
 import PageHeading from "../components/PageHeading";
-import inverterBanner from "../assets/inverter-hero-home.svg";
 
 const locationQuery = "Naurauli, Azamgarh";
 const mapsUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(locationQuery)}`;
@@ -14,7 +13,6 @@ export default function ContactPage() {
         eyebrow="CONTACT OUR TEAM"
         title={<>Let's talk about <em>your power needs.</em></>}
         description="Call, email, or find Gaurav Sales in Naurauli, Azamgarh."
-        image={inverterBanner}
       />
       <div className="gs-contact-layout gs-contact-directory">
         <aside className="gs-contact-aside gs-contact-details">

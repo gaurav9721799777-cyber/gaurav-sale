@@ -1,8 +1,8 @@
 import inverterPhoto from "../assets/real-home-inverter.jpg";
 import batteryPhoto from "../assets/real-lead-acid-battery.jpg";
 
-export type ProductBrand = "microtek" | "luminous";
-export type ProductCategory = "Inverter" | "Battery";
+export type ProductBrand = string;
+export type ProductCategory = string;
 
 export type Product = {
   id: string;
