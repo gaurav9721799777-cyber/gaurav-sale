@@ -5,6 +5,8 @@ import { productsApi, resolveProductImageUrl } from '../services/ProductService'
 import type { Product } from '../services/ProductService';
 import PageHeading from './PageHeading';
 import AppLoader from './AppLoader';
+import { apiErrorMessage } from "../services/apiError";
+import productPageHero from "../assets/product-page-hero.jpg";
 import './storefront.css';
 
 const money = (value: number) =>
@@ -42,7 +44,7 @@ function ProductPage({ slug: providedSlug, onAdd }: { slug?: string; onAdd: (pro
         if (current) setProduct(item);
       })
       .catch((err: unknown) => {
-        if (current) setError(err instanceof Error ? err.message : 'Could not load this product.');
+        if (current) setError(apiErrorMessage(err, "Product Not Available. Please check back soon."));
       })
       .finally(() => {
         if (current) setLoading(false);
@@ -59,12 +61,20 @@ function ProductPage({ slug: providedSlug, onAdd }: { slug?: string; onAdd: (pro
         eyebrow="PRODUCT DETAILS"
         title={product ? <>{product.name}</> : <>Product <em>details.</em></>}
         description={product?.description || "Explore dependable backup power for your home, with the details you need to choose confidently."}
+        fullImage={productPageHero}
+        imageAlt="Premium inverter and battery products from trusted brands"
       />
 
       <div className="storefront-detail-wrap">
         <a className="storefront-back-link" href="/product">← Back to products</a>
         {loading && <AppLoader label="Loading product" variant="inline" />}
-        {!loading && error && <p className="storefront-message" role="alert">{error}</p>}
+        {!loading && error && (
+          <div className="gs-home-empty-state gs-product-unavailable">
+            <span className="gs-home-empty-icon"><IconShoppingBag size={24} /></span>
+            <strong>Product Not Available</strong>
+            <p>{error}</p>
+          </div>
+        )}
         {!loading && !error && product && (
           <article className="storefront-detail">
             <div className="storefront-detail-image">

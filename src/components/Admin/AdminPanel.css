@@ -303,29 +303,6 @@
   font-size: 11px;
 }
 
-.admin-notification {
-  position: relative;
-  display: grid;
-  place-items: center;
-  width: 35px;
-  height: 35px;
-  border: 1px solid #eeeef2;
-  border-radius: 9px;
-  background: #fff;
-  color: #555661;
-}
-
-.admin-notification i {
-  position: absolute;
-  top: 7px;
-  right: 8px;
-  width: 6px;
-  height: 6px;
-  border: 1px solid #fff;
-  border-radius: 50%;
-  background: #f1786b;
-}
-
 .admin-top-profile {
   display: flex;
   align-items: center;
@@ -1058,7 +1035,9 @@
 
 .admin-table-scroll {
   width: 100%;
+  min-width: 0;
   overflow-x: auto;
+  overscroll-behavior-x: contain;
 }
 
 .admin-table {
@@ -1686,10 +1665,20 @@
     padding: 24px 14px 35px;
   }
 
-  .admin-date,
   .admin-top-profile > span:not(.admin-avatar),
   .admin-top-profile > svg {
     display: none;
+  }
+
+  .admin-date {
+    gap: 4px;
+    font-size: 8px;
+    white-space: nowrap;
+  }
+
+  .admin-date svg {
+    width: 13px;
+    height: 13px;
   }
 
   .admin-topbar-right {
@@ -1761,6 +1750,19 @@
     padding: 10px 12px;
   }
 
+  .admin-table-toolbar {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .admin-search {
+    width: 100%;
+  }
+
+  .admin-filter-button {
+    align-self: flex-start;
+  }
+
   .admin-modal-backdrop {
     align-items: end;
     padding: 0;
@@ -1781,6 +1783,28 @@
 }
 
 @media (max-width: 390px) {
+  .admin-topbar {
+    gap: 8px;
+    padding-right: 10px;
+    padding-left: 10px;
+  }
+
+  .admin-breadcrumb {
+    min-width: 0;
+    gap: 5px;
+    font-size: 10px;
+  }
+
+  .admin-breadcrumb strong {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .admin-topbar-right {
+    gap: 5px;
+  }
+
   .admin-stat-grid {
     gap: 8px;
   }

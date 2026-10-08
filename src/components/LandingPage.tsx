@@ -4,6 +4,7 @@ import type { Product } from '../services/ProductService';
 import AppLoader from './AppLoader';
 import InfiniteScrollTrigger from './InfiniteScrollTrigger';
 import { useInfiniteScroll } from '../hooks/useInfiniteScroll';
+import { apiErrorMessage } from '../services/apiError';
 
 const money = (value: number) =>
   new Intl.NumberFormat('en-IN', {
@@ -27,7 +28,7 @@ function LandingPage() {
         if (current) setProducts(items.filter((product) => product.active !== false));
       })
       .catch((err: unknown) => {
-        if (current) setError(err instanceof Error ? err.message : 'Could not load products.');
+        if (current) setError(apiErrorMessage(err, "Products are not available right now. Please check back soon."));
       })
       .finally(() => {
         if (current) setLoading(false);
@@ -71,10 +72,18 @@ function LandingPage() {
           {!loading && <span>{products.length} {products.length === 1 ? 'product' : 'products'}</span>}
         </div>
 
-        {error && <p className="storefront-message" role="alert">{error}</p>}
+        {error && (
+          <div className="gs-home-empty-state">
+            <strong>Product Not Available</strong>
+            <p>{error}</p>
+          </div>
+        )}
         {loading && <AppLoader label="Loading products" variant="inline" />}
         {!loading && !error && products.length === 0 && (
-          <p className="storefront-message">There are no products available right now. Please check back soon.</p>
+          <div className="gs-home-empty-state">
+            <strong>Product Not Available</strong>
+            <p>Products are not available right now. Please check back soon.</p>
+          </div>
         )}
 
         <div className="storefront-product-grid">

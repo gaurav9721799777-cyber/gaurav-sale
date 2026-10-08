@@ -1,6 +1,15 @@
 import React from "react";
-import { IconArrowUpRight, IconMail, IconMapPin, IconPhone } from "@tabler/icons-react";
+import {
+  IconArrowUpRight,
+  IconBrandFacebook,
+  IconBrandInstagram,
+  IconBrandYoutube,
+  IconMail,
+  IconMapPin,
+  IconPhone,
+} from "@tabler/icons-react";
 import PageHeading from "../components/PageHeading";
+import contactPageHero from "../assets/contact-page-hero.jpg";
 
 const locationQuery = "Naurauli, Azamgarh";
 const mapsUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(locationQuery)}`;
@@ -13,6 +22,8 @@ export default function ContactPage() {
         eyebrow="CONTACT OUR TEAM"
         title={<>Let's talk about <em>your power needs.</em></>}
         description="Call, email, or find Gaurav Sales in Naurauli, Azamgarh."
+        fullImage={contactPageHero}
+        imageAlt="Contact Gaurav Sales for inverter, battery, and order support"
       />
       <div className="gs-contact-layout gs-contact-directory">
         <aside className="gs-contact-aside gs-contact-details">
@@ -20,7 +31,7 @@ export default function ContactPage() {
           <h2>We're here to help.</h2>
           <p>Reach out for product advice, availability, or order support.</p>
           <div className="gs-contact-option">
-            <IconMapPin />
+            <span className="gs-contact-icon gs-contact-icon-location"><IconMapPin /></span>
             <span>
               <strong>Address</strong>
               <a href={mapsUrl} target="_blank" rel="noreferrer">
@@ -29,18 +40,24 @@ export default function ContactPage() {
             </span>
           </div>
           <div className="gs-contact-option">
-            <IconPhone />
+            <span className="gs-contact-icon gs-contact-icon-phone"><IconPhone /></span>
             <span>
               <strong>Phone</strong>
               <a href="tel:674238472384">674238472384</a>
             </span>
           </div>
           <div className="gs-contact-option">
-            <IconMail />
+            <span className="gs-contact-icon gs-contact-icon-email"><IconMail /></span>
             <span>
               <strong>Email</strong>
               <a href="mailto:gaurav@gmail.com">gaurav@gmail.com</a>
             </span>
+          </div>
+          <div className="gs-contact-social" aria-label="Follow Gaurav Sales">
+            <strong>Connect with us</strong>
+            <a href="https://www.facebook.com/" target="_blank" rel="noreferrer" aria-label="Visit Facebook" title="Facebook" className="social-facebook"><IconBrandFacebook /></a>
+            <a href="https://www.instagram.com/" target="_blank" rel="noreferrer" aria-label="Visit Instagram" title="Instagram" className="social-instagram"><IconBrandInstagram /></a>
+            <a href="https://www.youtube.com/" target="_blank" rel="noreferrer" aria-label="Visit YouTube" title="YouTube" className="social-youtube"><IconBrandYoutube /></a>
           </div>
         </aside>
         <div className="gs-map-card">

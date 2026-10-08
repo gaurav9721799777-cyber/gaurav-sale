@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { IconArrowRight, IconBolt, IconShoppingBag, IconLoader2, IconPlus, IconMinus } from "@tabler/icons-react";
 import type { Product } from "../data/products";
+import { apiErrorMessage } from "../services/apiError";
 
 type ProductCardProps = {
   product: Product;
@@ -49,19 +50,6 @@ export default function ProductCard({
   useEffect(() => {
     setQuantity((current) => Math.min(current, Math.max(1, availableToAdd)));
   }, [availableToAdd]);
-  const addErrorText = (error: unknown) => {
-    if (error && typeof error === "object") {
-      const networkError = error as { code?: string; message?: string };
-      if (networkError.code === "ERR_NETWORK" || networkError.message === "Network Error") {
-        return "Can't reach the cart service. Check that the backend is running on port 8080.";
-      }
-      const responseData = (error as { response?: { data?: { message?: unknown; error?: unknown } } }).response?.data;
-      const message = responseData?.message || responseData?.error;
-      if (typeof message === "string") return message;
-    }
-    return error instanceof Error ? error.message : "Could not add this item. Please try again.";
-  };
-
   const addSelectedQuantity = async (event: React.MouseEvent<HTMLButtonElement>) => {
     event.stopPropagation();
     setAddError("");
@@ -71,7 +59,7 @@ export default function ProductCard({
       await onAdd(product.id, quantity);
       setAdded(true);
     } catch (error) {
-      setAddError(addErrorText(error));
+      setAddError(apiErrorMessage(error, "Could not add this item. Please try again."));
     } finally {
       setAdding(false);
     }

@@ -5,13 +5,22 @@ import { BrowserRouter, useLocation, useNavigate } from "react-router-dom";
 import {
   IconArrowRight,
   IconBatteryCharging,
+  IconBrandFacebook,
+  IconBrandInstagram,
+  IconBrandYoutube,
   IconBolt,
   IconChevronDown,
+  IconCreditCard,
   IconDeviceDesktop,
+  IconHelpCircle,
+  IconInfoCircle,
   IconMenu2,
   IconPackage,
+  IconPhone,
   IconShieldCheck,
   IconShoppingBag,
+  IconTruck,
+  IconUserCircle,
   IconX,
 } from "@tabler/icons-react";
 
@@ -20,6 +29,8 @@ import brandLogo from "./assets/gs-logo.png";
 import AppRoutes, { type RoutePath } from "./Route/AppRoutes";
 
 import { addCartItem, clearCart as clearCartRequest, getCart, normalizeCartLines, removeCartItem, updateCartItem, type CartLine } from "./services/CartService";
+import { getCategories, type Category } from "./services/CategoryServiceService";
+import { apiErrorMessage } from "./services/apiError";
 
 import "./App.css";
 import "./StorePages.css";
@@ -34,7 +45,7 @@ const navigation: {
   },
   {
     label: "Products",
-    path: "/products",
+    path: "/product",
   },
   {
     label: "About us",
@@ -82,17 +93,35 @@ function AppContent() {
   const [cart, setCart] = useState<CartLine[]>([]);
   const [cartBusy, setCartBusy] = useState(true);
   const [cartMessage, setCartMessage] = useState("");
+  const [adminAuthenticated, setAdminAuthenticated] = useState(false);
+  const [socialLinksOpen, setSocialLinksOpen] = useState(false);
+  const [productCategories, setProductCategories] = useState<Category[]>([]);
 
   useEffect(() => {
     let active = true;
     getCart(cartId)
       .then((record) => { if (active) setCart(normalizeCartLines(record)); })
       .catch((error: unknown) => {
-        if (active) setCartMessage(error instanceof Error ? error.message : "Could not load your bag.");
+        if (active) setCartMessage(apiErrorMessage(error, "Could not load your bag."));
       })
       .finally(() => { if (active) setCartBusy(false); });
     return () => { active = false; };
   }, [cartId]);
+
+  useEffect(() => {
+    let active = true;
+    getCategories()
+      .then((categories) => {
+        if (active) setProductCategories(categories);
+      })
+      .catch((error: unknown) => {
+        console.error("Could not load product categories for navigation.", error);
+        if (active) setProductCategories([]);
+      });
+    return () => {
+      active = false;
+    };
+  }, []);
 
   // ==========================================
   // MENU
@@ -115,7 +144,7 @@ function AppContent() {
       setCart(normalizeCartLines(latestCart));
       setCartMessage(successMessage);
     } catch (error) {
-      const message = error instanceof Error ? error.message : "Could not update your bag. Please try again.";
+      const message = apiErrorMessage(error, "Could not update your bag. Please try again.");
       setCartMessage(message);
       throw error;
     } finally {
@@ -164,7 +193,7 @@ function AppContent() {
   const cartCount = cart.reduce((total, line) => total + line.quantity, 0);
 
   return (
-    <div className="gs-site">
+    <div className={`gs-site${path.startsWith("/admin") ? " is-admin-route" : ""}`}>
       {/* ========================================
           ANNOUNCEMENT
       ========================================= */}
@@ -222,22 +251,35 @@ function AppContent() {
               onClick={() => go("/about")}
               aria-current={path === "/about" ? "page" : undefined}
             >
+              <IconInfoCircle className="gs-nav-icon gs-nav-icon-about" size={16} />
               About us
             </button>
 
             {/* PRODUCTS */}
 
-            <button
-              className={`gs-products-trigger${
-                path.startsWith("/products") ? " is-active" : ""
-              }`}
-              onClick={() => setProductsMenuOpen((open) => !open)}
-              aria-expanded={productsMenuOpen}
-              aria-controls="gs-products-menu"
-            >
-              Products
-              <IconChevronDown size={14} />
-            </button>
+            <span className="gs-products-nav-group">
+              <button
+                className={`gs-products-trigger${
+                  path === "/product" || path.startsWith("/products") ? " is-active" : ""
+                }`}
+                onClick={() => go("/product")}
+              >
+                <IconPackage className="gs-nav-icon gs-nav-icon-products" size={16} />
+                Products
+              </button>
+              {productCategories.length > 0 && (
+                <button
+                  className="gs-products-dropdown-toggle"
+                  type="button"
+                  onClick={() => setProductsMenuOpen((open) => !open)}
+                  aria-label={productsMenuOpen ? "Hide product categories" : "Show product categories"}
+                  aria-expanded={productsMenuOpen}
+                  aria-controls="gs-products-menu"
+                >
+                  <IconChevronDown size={14} />
+                </button>
+              )}
+            </span>
 
             {/* SHIPPING */}
 
@@ -245,6 +287,7 @@ function AppContent() {
               className={path === "/shipping" ? "is-active" : ""}
               onClick={() => go("/shipping")}
             >
+              <IconTruck className="gs-nav-icon gs-nav-icon-shipping" size={16} />
               Shipping
             </button>
 
@@ -254,6 +297,7 @@ function AppContent() {
               className={path === "/payment" ? "is-active" : ""}
               onClick={() => go("/payment")}
             >
+              <IconCreditCard className="gs-nav-icon gs-nav-icon-payment" size={16} />
               Payment
             </button>
 
@@ -263,6 +307,7 @@ function AppContent() {
               className={path === "/contact" ? "is-active" : ""}
               onClick={() => go("/contact")}
             >
+              <IconPhone className="gs-nav-icon gs-nav-icon-contact" size={16} />
               Contact
             </button>
 
@@ -272,6 +317,7 @@ function AppContent() {
               className={path === "/faq" ? "is-active" : ""}
               onClick={() => go("/faq")}
             >
+              <IconHelpCircle className="gs-nav-icon gs-nav-icon-faq" size={16} />
               FAQs
             </button>
           </nav>
@@ -281,6 +327,14 @@ function AppContent() {
           ===================================== */}
 
           <div className="gs-header-actions">
+            <button
+              className="gs-login-button"
+              onClick={() => go("/admin/login")}
+            >
+              <IconUserCircle size={16} />
+              <span>Login</span>
+            </button>
+
             {/* ORDER */}
 
             <button
@@ -316,95 +370,46 @@ function AppContent() {
             MEGA MENU
         ========================================= */}
 
-        {productsMenuOpen && (
+        {productsMenuOpen && productCategories.length > 0 && (
           <div className="gs-mega-menu" id="gs-products-menu">
             <div className="gs-mega-inner">
-              {/* CATEGORIES */}
-
               <div className="gs-mega-categories">
-                <span>POWER BACKUP</span>
-
-                <button onClick={() => go("/products")}>
-                  Home inverter systems
-                  <IconArrowRight size={14} />
-                </button>
-
-                <button onClick={() => go("/products/batteries")}>
-                  Battery solutions
-                  <IconArrowRight size={14} />
-                </button>
-
-                <button onClick={() => go("/products/inverters")}>
-                  UPS &amp; backup power
-                  <IconArrowRight size={14} />
-                </button>
-
-                <button onClick={() => go("/products")}>
-                  High capacity systems
-                  <IconArrowRight size={14} />
-                </button>
+                <span>SHOP BY CATEGORY</span>
+                {productCategories.map((category) => (
+                  <button
+                    key={category.id}
+                    onClick={() => go(`/products/category/${encodeURIComponent(category.slug)}`)}
+                  >
+                    {category.name}
+                    <IconArrowRight size={14} />
+                  </button>
+                ))}
               </div>
-
-              {/* MEGA PRODUCTS */}
 
               <div className="gs-mega-products">
                 <div className="gs-mega-title">
-                  <strong>Explore products</strong>
-
-                  <button onClick={() => go("/products")}>
-                    Shop all
+                  <strong>Explore categories</strong>
+                  <button onClick={() => go("/product")}>
+                    View all products
                     <IconArrowRight size={14} />
                   </button>
                 </div>
 
                 <div className="gs-mega-grid">
-                  {/* INVERTER */}
-
-                  <button onClick={() => go("/products/inverters")}>
-                    <span>
-                      <IconDeviceDesktop />
-                    </span>
-
-                    <strong>Home inverter</strong>
-
-                    <small>Everyday backup</small>
-                  </button>
-
-                  {/* BATTERY */}
-
-                  <button onClick={() => go("/products/batteries")}>
-                    <span>
-                      <IconBatteryCharging />
-                    </span>
-
-                    <strong>Inverter battery</strong>
-
-                    <small>Reliable storage</small>
-                  </button>
-
-                  {/* UPS */}
-
-                  <button onClick={() => go("/products")}>
-                    <span>
-                      <IconPackage />
-                    </span>
-
-                    <strong>UPS systems</strong>
-
-                    <small>Uninterrupted power</small>
-                  </button>
-
-                  {/* HIGH CAPACITY */}
-
-                  <button onClick={() => go("/products")}>
-                    <span>
-                      <IconBolt />
-                    </span>
-
-                    <strong>High capacity</strong>
-
-                    <small>More power at home</small>
-                  </button>
+                  {productCategories.map((category) => {
+                    const isBattery = /battery|batter/i.test(category.name);
+                    const CategoryIcon = isBattery ? IconBatteryCharging : IconDeviceDesktop;
+                    return (
+                      <button
+                        key={category.id}
+                        onClick={() => go(`/products/category/${encodeURIComponent(category.slug)}`)}
+                      >
+                        <span><CategoryIcon /></span>
+                        <strong>{category.name}</strong>
+                        <small>{category.description || "Explore available products"}</small>
+                      </button>
+                    );
+                  })}
                 </div>
               </div>
 
@@ -444,6 +449,10 @@ function AppContent() {
               Place an order
               <IconArrowRight size={16} />
             </button>
+            <button onClick={() => go("/admin/login")}>
+              Login
+              <IconArrowRight size={16} />
+            </button>
           </nav>
         )}
       </header>
@@ -453,7 +462,28 @@ function AppContent() {
       ========================================= */}
 
       <main>
-        <AppRoutes path={path} navigate={go} cart={cart} cartId={cartId} onAdd={addToCart} onRemove={removeFromCart} onQuantityChange={changeCartQuantity} onClearCart={emptyCart} onOrderPlaced={handleOrderPlaced} cartBusy={cartBusy} cartMessage={cartMessage} />
+        <AppRoutes
+          path={path}
+          navigate={go}
+          cart={cart}
+          cartId={cartId}
+          onAdd={addToCart}
+          onRemove={removeFromCart}
+          onQuantityChange={changeCartQuantity}
+          onClearCart={emptyCart}
+          onOrderPlaced={handleOrderPlaced}
+          cartBusy={cartBusy}
+          cartMessage={cartMessage}
+          adminAuthenticated={adminAuthenticated}
+          onAdminLogin={() => {
+            setAdminAuthenticated(true);
+            go("/admin/dashboard");
+          }}
+          onAdminLogout={() => {
+            setAdminAuthenticated(false);
+            go("/");
+          }}
+        />
       </main>
 
       {/* ========================================
@@ -478,6 +508,11 @@ function AppContent() {
               <p>
                 Dependable inverter solutions and helpful service for your home.
               </p>
+              <div className="gs-footer-social" aria-label="Follow Gaurav Sales">
+                <a href="https://www.facebook.com/" target="_blank" rel="noreferrer" aria-label="Visit Facebook" title="Facebook" className="social-facebook"><IconBrandFacebook /></a>
+                <a href="https://www.instagram.com/" target="_blank" rel="noreferrer" aria-label="Visit Instagram" title="Instagram" className="social-instagram"><IconBrandInstagram /></a>
+                <a href="https://www.youtube.com/" target="_blank" rel="noreferrer" aria-label="Visit YouTube" title="YouTube" className="social-youtube"><IconBrandYoutube /></a>
+              </div>
             </div>
 
             {/* EXPLORE */}
@@ -532,6 +567,54 @@ function AppContent() {
           </div>
         </div>
       </footer>
+
+      <aside
+        className={`gs-social-dock${socialLinksOpen ? " is-open" : ""}`}
+        aria-label="Social media"
+      >
+        <div className="gs-social-links" id="gs-social-links">
+          <a
+            className="social-facebook"
+            href="https://www.facebook.com/"
+            target="_blank"
+            rel="noreferrer"
+            aria-label="Visit Facebook"
+            title="Facebook"
+          >
+            <IconBrandFacebook />
+          </a>
+          <a
+            className="social-instagram"
+            href="https://www.instagram.com/"
+            target="_blank"
+            rel="noreferrer"
+            aria-label="Visit Instagram"
+            title="Instagram"
+          >
+            <IconBrandInstagram />
+          </a>
+          <a
+            className="social-youtube"
+            href="https://www.youtube.com/"
+            target="_blank"
+            rel="noreferrer"
+            aria-label="Visit YouTube"
+            title="YouTube"
+          >
+            <IconBrandYoutube />
+          </a>
+        </div>
+        <button
+          type="button"
+          className="gs-social-toggle"
+          aria-label={socialLinksOpen ? "Hide social media links" : "Show social media links"}
+          aria-expanded={socialLinksOpen}
+          aria-controls="gs-social-links"
+          onClick={() => setSocialLinksOpen((open) => !open)}
+        >
+          <span>SOCIAL MEDIA</span>
+        </button>
+      </aside>
     </div>
   );
 }

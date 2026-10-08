@@ -3,6 +3,7 @@ import { Button } from "@mantine/core";
 import { IconArrowRight, IconMapPin, IconPackage, IconTruck } from "@tabler/icons-react";
 import PageHeading from "../components/PageHeading";
 import type { RoutePath } from "../Route/AppRoutes";
+import shippingPageHero from "../assets/shipping-page-hero.jpg";
 
 type ShippingPageProps = { navigate: (path: RoutePath) => void };
 
@@ -13,6 +14,8 @@ export default function ShippingPage({ navigate }: ShippingPageProps) {
         eyebrow="DELIVERY & SHIPPING"
         title={<>From our store <em>to your door.</em></>}
         description="A clear guide to order processing, delivery updates, and what to expect when your inverter is on its way."
+        fullImage={shippingPageHero}
+        imageAlt="Shipping information and delivery service for Gaurav Sales products"
       />
       <div className="gs-shipping-steps">
         <article><span><IconPackage /></span><b>01 · Order confirmed</b><p>We review your order and confirm product availability and delivery details.</p></article>

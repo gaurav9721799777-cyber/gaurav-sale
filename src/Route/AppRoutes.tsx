@@ -20,6 +20,8 @@ const OrderPage = lazy(() => import("../pages/OrderPage"));
 const ShippingPage = lazy(() => import("../pages/ShippingPage"));
 const PaymentPage = lazy(() => import("../pages/PaymentPage"));
 const ProductPage = lazy(() => import("../components/ProductPage"));
+const AdminLogin = lazy(() => import("../components/Admin/AdminLoginPage"));
+const AdminPanel = lazy(() => import("../components/Admin/AdminPanel"));
 
 export type RoutePath =
   | "/"
@@ -58,6 +60,9 @@ type AppRoutesProps = {
   onOrderPlaced: () => Promise<void>;
   cartBusy: boolean;
   cartMessage: string;
+  adminAuthenticated: boolean;
+  onAdminLogin: () => void;
+  onAdminLogout: () => void;
 };
 
 export const useAppNavigation = () => {
@@ -87,13 +92,19 @@ const AppRouteContent = ({
   onOrderPlaced,
   cartBusy,
   cartMessage,
+  adminAuthenticated,
+  onAdminLogin,
+  onAdminLogout,
   navigate,
 }: AppRoutesProps) => {
   return (
     <Suspense fallback={<LoadingPage />}>
       <Routes location={path}>
         {/* HOME */}
-        <Route path="/" element={<HomePage navigate={navigate} />} />
+        <Route
+          path="/"
+          element={<HomePage navigate={navigate} onAdd={onAdd} cart={cart} />}
+        />
 
         {/* PRODUCTS */}
         <Route
@@ -107,7 +118,17 @@ const AppRouteContent = ({
             />
           }
         />
-        <Route path="/product" element={<Navigate to="/products" replace />} />
+        <Route
+          path="/product"
+          element={
+            <ProductsPage
+              brand="all"
+              onAdd={onAdd}
+              cart={cart}
+              navigate={navigate}
+            />
+          }
+        />
         <Route
           path="/products/microtek"
           element={
@@ -183,6 +204,32 @@ const AppRouteContent = ({
         />
 
         <Route path="/payment" element={<PaymentPage navigate={navigate} />} />
+
+        {/* ADMIN */}
+        <Route
+          path="/admin/login"
+          element={
+            adminAuthenticated ? (
+              <Navigate to="/admin/dashboard" replace />
+            ) : (
+              <AdminLogin onLogin={onAdminLogin} />
+            )
+          }
+        />
+        <Route
+          path="/admin/*"
+          element={
+            adminAuthenticated ? (
+              <AdminPanel
+                routePath={path}
+                navigate={navigate}
+                onLogout={onAdminLogout}
+              />
+            ) : (
+              <Navigate to="/admin/login" replace />
+            )
+          }
+        />
 
         {/* ORDER */}
 

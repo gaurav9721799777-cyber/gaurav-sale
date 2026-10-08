@@ -4,6 +4,7 @@ import { IconArrowRight, IconBolt, IconHeart, IconShieldCheck } from "@tabler/ic
 import PageHeading from "../components/PageHeading";
 import type { RoutePath } from "../Route/AppRoutes";
 import premiumBrandsBanner from "../assets/premium-brands-home-banner.png";
+import aboutPageHero from "../assets/about-page-hero.jpg";
 import founderPortrait from "../assets/amit-rai-about.png";
 import founderPortraitAlt from "../assets/amit-rai-home.png";
 
@@ -16,6 +17,8 @@ export default function AboutPage({ navigate }: AboutPageProps) {
         eyebrow="ABOUT GAURAV SALES"
         title={<>A better way to choose <em>home power.</em></>}
         description="We believe finding a dependable inverter should feel clear, personal, and supported from the first question to delivery."
+        fullImage={aboutPageHero}
+        imageAlt="About Gaurav Sales and our inverter and battery solutions"
       />
       <div className="gs-about-layout">
         <div className="gs-about-copy">

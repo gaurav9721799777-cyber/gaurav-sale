@@ -2,7 +2,6 @@ import React, { FormEvent, useCallback, useEffect, useMemo, useState } from "rea
 import Swal from "sweetalert2";
 import {
   IconArrowUpRight,
-  IconBell,
   IconBox,
   IconChevronDown,
   IconChevronRight,
@@ -92,6 +91,7 @@ const salesBars = [36, 52, 44, 68, 57, 78, 63, 89, 72, 96, 79, 100];
 const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 
 function AdminPanel({ routePath, navigate: navigateRoute, onLogout }: { routePath: string; navigate: (path: import("../../Route/AppRoutes").RoutePath) => void; onLogout: () => void }) {
+  const [currentDateTime, setCurrentDateTime] = useState(() => new Date());
   const [section, setSection] = useState<Section>(() => sectionFromRoute(routePath));
   const [products, setProducts] = useState<AdminProduct[]>([]);
   const [productsLoading, setProductsLoading] = useState(true);
@@ -121,6 +121,11 @@ function AdminPanel({ routePath, navigate: navigateRoute, onLogout }: { routePat
   const [accountMenuOpen, setAccountMenuOpen] = useState(false);
   const [notice, setNotice] = useState("");
   const [filter, setFilter] = useState("All orders");
+
+  useEffect(() => {
+    const timer = window.setInterval(() => setCurrentDateTime(new Date()), 30_000);
+    return () => window.clearInterval(timer);
+  }, []);
 
   const refreshOrders = useCallback(async (statusFilter = filter, paymentStatusFilter = paymentFilter) => {
     setOrdersLoading(true);
@@ -411,8 +416,16 @@ function AdminPanel({ routePath, navigate: navigateRoute, onLogout }: { routePat
           <button className="admin-mobile-menu" aria-label="Open menu" onClick={() => setMobileMenuOpen(true)}><IconMenu2 /></button>
           <div className="admin-breadcrumb"><span>Workspace</span><IconChevronRight size={15} /><strong>{section}</strong></div>
           <div className="admin-topbar-right">
-            <span className="admin-date"><IconClock size={16} /> Monday, October 5</span>
-            <button className="admin-notification" aria-label="Notifications" onClick={() => setNotice("You’re all caught up.")}><IconBell size={19} /><i /></button>
+            <span className="admin-date">
+              <IconClock size={16} />
+              {new Intl.DateTimeFormat(undefined, {
+                weekday: "long",
+                month: "long",
+                day: "numeric",
+                hour: "2-digit",
+                minute: "2-digit",
+              }).format(currentDateTime)}
+            </span>
             <div className="admin-account-menu">
               <button className="admin-top-profile" aria-haspopup="menu" aria-expanded={accountMenuOpen} onClick={() => setAccountMenuOpen((open) => !open)}><span className="admin-avatar">GS</span><span>Gaurav Sales</span><IconChevronDown size={15} /></button>
               {accountMenuOpen && <div className="admin-account-dropdown" role="menu"><div className="admin-account-dropdown-heading"><strong>Gaurav Sales</strong><small>Administrator</small></div><button role="menuitem" onClick={() => { setAccountMenuOpen(false); onLogout(); }}><IconLogout size={16} /> Logout</button></div>}

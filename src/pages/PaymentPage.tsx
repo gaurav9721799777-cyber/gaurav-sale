@@ -3,6 +3,7 @@ import { Button } from "@mantine/core";
 import { IconArrowRight, IconCash, IconCheck, IconShieldCheck } from "@tabler/icons-react";
 import PageHeading from "../components/PageHeading";
 import type { RoutePath } from "../Route/AppRoutes";
+import paymentPageHero from "../assets/payment-page-hero.jpg";
 
 type PaymentPageProps = { navigate: (path: RoutePath) => void };
 
@@ -13,6 +14,8 @@ export default function PaymentPage({ navigate }: PaymentPageProps) {
         eyebrow="PAYMENT INFORMATION"
         title={<>Simple checkout. <em>Cash on delivery.</em></>}
         description="Pay for your inverter order when it arrives. No online card payment is required in this storefront."
+        fullImage={paymentPageHero}
+        imageAlt="Payment options available for shopping with Gaurav Sales"
       />
       <div className="gs-payment-card">
         <div className="gs-payment-icon"><IconCash size={38} /></div>

@@ -27,6 +27,8 @@ import {
 } from "../services/ProductService";
 import { getCategories, getCategoryBySlug, type Category } from "../services/CategoryServiceService";
 import { brandKey, getBrands, type Brand } from "../services/BrandService";
+import { apiErrorMessage } from "../services/apiError";
+import productPageHero from "../assets/product-page-hero.jpg";
 
 type ProductsPageProps = {
   brand: ProductBrand | "all";
@@ -129,10 +131,10 @@ export default function ProductsPage({
           setCategories(resolvedCategories);
           setSelectedCategory(category ?? null);
         }
-      } catch (error) {
+      } catch (error: unknown) {
         console.error("Error fetching products:", error);
 
-        setError("Unable to load products.");
+        setError(apiErrorMessage(error, "Unable to load products."));
       } finally {
         setLoading(false);
       }
@@ -284,6 +286,25 @@ export default function ProductsPage({
     ? allCategoryFilters.filter((filter) => filter.category === selectedCategory)
     : allCategoryFilters;
 
+  const pageHeading = (
+    <PageHeading
+      eyebrow={selectedCategory ? `${selectedCategory} CATEGORY` : "BRANDS & PRODUCTS"}
+      title={
+        <>
+          {titleBrand.split(" ").slice(0, -2).join(" ")}{" "}
+          <em>{titleBrand.split(" ").slice(-2).join(" ")}</em>
+        </>
+      }
+      description={
+        selectedCategory
+          ? `Browse ${selectedCategory.toLowerCase()} products from ${brandName}. Add your selection to the bag and our team will confirm availability and pricing.`
+          : `Browse ${brandName} inverters and backup batteries. Exact model availability, compatible batteries, and pricing are confirmed with our team.`
+      }
+      fullImage={productPageHero}
+      imageAlt="Premium inverter and battery products from trusted brands"
+    />
+  );
+
   // ==========================================
   // LOADING
   // ==========================================
@@ -291,6 +312,7 @@ export default function ProductsPage({
   if (loading) {
     return (
       <section className="gs-page gs-container">
+        {pageHeading}
         <AppLoader label="Loading products" variant="section" />
       </section>
     );
@@ -303,17 +325,11 @@ export default function ProductsPage({
   if (error) {
     return (
       <section className="gs-page gs-container">
-        <div className="gs-catalog-empty">
-          <strong>Something went wrong</strong>
-
+        {pageHeading}
+        <div className="gs-home-empty-state gs-catalog-unavailable">
+          <span className="gs-home-empty-icon"><IconBolt size={25} /></span>
+          <strong>{categorySlug ? "Service Not Available" : "Product Not Available"}</strong>
           <p>{error}</p>
-
-          <Button
-            className="gs-button"
-            onClick={() => window.location.reload()}
-          >
-            Try again
-          </Button>
         </div>
       </section>
     );
@@ -325,24 +341,7 @@ export default function ProductsPage({
 
   return (
     <section className="gs-page gs-container">
-      <PageHeading
-        eyebrow={
-          selectedCategory
-            ? `${selectedCategory} CATEGORY`
-            : "BRANDS & PRODUCTS"
-        }
-        title={
-          <>
-            {titleBrand.split(" ").slice(0, -2).join(" ")}{" "}
-            <em>{titleBrand.split(" ").slice(-2).join(" ")}</em>
-          </>
-        }
-        description={
-          selectedCategory
-            ? `Browse ${selectedCategory.toLowerCase()} products from ${brandName}. Add your selection to the bag and our team will confirm availability and pricing.`
-            : `Browse ${brandName} inverters and backup batteries. Exact model availability, compatible batteries, and pricing are confirmed with our team.`
-        }
-      />
+      {pageHeading}
 
       {/* ======================================
           CATALOG
@@ -465,9 +464,11 @@ export default function ProductsPage({
                 />
               ))
             ) : (
-              <p className="gs-catalog-empty">
-                Select at least one brand to see matching products.
-              </p>
+              <div className="gs-home-empty-state gs-catalog-unavailable">
+                <span className="gs-home-empty-icon"><IconBolt size={25} /></span>
+                <strong>Product Not Available</strong>
+                <p>No products match this selection right now. Please check back soon.</p>
+              </div>
             )}
           </div>
           <InfiniteScrollTrigger hasMore={hasMore} onLoadMore={loadMore} />
