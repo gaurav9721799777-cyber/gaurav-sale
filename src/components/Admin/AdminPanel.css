@@ -129,9 +129,9 @@
 }
 
 .admin-nav > .admin-nav-item:nth-child(1) > svg { color: #a995ff; }
-.admin-nav > .admin-nav-item:nth-child(2) > svg { color: #62c7ff; }
+.admin-nav > .admin-nav-item:nth-child(2) > svg { color: #ff83b5; }
 .admin-nav > .admin-nav-item:nth-child(3) > svg { color: #ffbd69; }
-.admin-nav > .admin-nav-item:nth-child(4) > svg { color: #ff83b5; }
+.admin-nav > .admin-nav-item:nth-child(4) > svg { color: #62c7ff; }
 .admin-nav > .admin-nav-item:nth-child(5) > svg { color: #65dda3; }
 .admin-nav > .admin-nav-item:nth-child(6) > svg { color: #ffc45f; }
 
@@ -433,6 +433,164 @@
   margin: 0;
   color: #858691;
   font-size: 13px;
+}
+
+.admin-catalog-guide {
+  position: relative;
+  overflow: hidden;
+  margin-bottom: 16px;
+  border: 1px solid #e8e5f2;
+  border-radius: 14px;
+  padding: 18px;
+  background: linear-gradient(120deg, #fff 0%, #fbfaff 100%);
+  box-shadow: 0 5px 18px #29213c0a;
+}
+
+.admin-catalog-guide::before {
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: 4px;
+  background: linear-gradient(180deg, #a995ff, #7157e8);
+  content: "";
+}
+
+.admin-catalog-guide-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin: 0 0 15px 3px;
+}
+
+.admin-catalog-guide-heading h2 {
+  margin: 5px 0 3px;
+  color: #252433;
+  font: 700 16px/1.35 "Plus Jakarta Sans", sans-serif;
+}
+
+.admin-catalog-guide-heading p {
+  margin: 0;
+  color: #858391;
+  font-size: 11px;
+}
+
+.admin-catalog-guide-order {
+  display: inline-flex;
+  flex: 0 0 auto;
+  align-items: center;
+  gap: 4px;
+  border: 1px solid #ebe8f4;
+  border-radius: 8px;
+  padding: 8px 10px;
+  background: #fff;
+  color: #716d83;
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.3px;
+}
+
+.admin-catalog-guide-order svg {
+  color: #9a8bd8;
+}
+
+.admin-catalog-steps {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.admin-catalog-step {
+  position: relative;
+  display: flex;
+  min-width: 0;
+  min-height: 142px;
+  flex-direction: column;
+  align-items: flex-start;
+  border: 1px solid #ebe9f1;
+  border-radius: 10px;
+  padding: 13px;
+  background: #fff;
+  color: #30303b;
+  text-align: left;
+  transition:
+    border-color 140ms ease,
+    box-shadow 140ms ease,
+    transform 140ms ease;
+}
+
+.admin-catalog-step:hover {
+  transform: translateY(-2px);
+  border-color: #c9c1e9;
+  box-shadow: 0 7px 18px #46378912;
+}
+
+.admin-catalog-step:focus-visible {
+  outline: 2px solid #8d78e9;
+  outline-offset: 2px;
+}
+
+.admin-catalog-step-top {
+  display: flex;
+  width: 100%;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 9px;
+}
+
+.admin-catalog-step-number {
+  display: grid;
+  width: 30px;
+  height: 30px;
+  place-items: center;
+  border: 1px solid #e7e2f6;
+  border-radius: 9px;
+  background: linear-gradient(145deg, #f5f2ff, #eeebfa);
+  color: #7157e8;
+  font-size: 10px;
+  font-weight: 800;
+}
+
+.admin-catalog-step-status {
+  border-radius: 20px;
+  padding: 4px 7px;
+  background: #f5f3fb;
+  color: #756a9b;
+  font-size: 9px;
+  font-weight: 700;
+}
+
+.admin-catalog-step > strong {
+  color: #33313d;
+  font: 700 12px/1.4 "Plus Jakarta Sans", sans-serif;
+}
+
+.admin-catalog-step > small {
+  margin-top: 4px;
+  color: #858391;
+  font-size: 10px;
+  line-height: 1.5;
+}
+
+.admin-catalog-step-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  margin-top: auto;
+  padding-top: 10px;
+  color: #6b55c9;
+  font-size: 10px;
+  font-weight: 700;
+}
+
+.admin-catalog-step.is-complete .admin-catalog-step-number {
+  background: #e8f7ef;
+  color: #29966a;
+}
+
+.admin-catalog-step.is-complete .admin-catalog-step-status {
+  background: #edf8f2;
+  color: #29966a;
 }
 
 .admin-primary-button,
@@ -1688,6 +1846,26 @@
   .admin-welcome,
   .admin-section-heading {
     align-items: flex-start;
+  }
+
+  .admin-catalog-guide {
+    padding: 16px 13px 13px;
+  }
+
+  .admin-catalog-guide-heading {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 9px;
+    margin-bottom: 12px;
+  }
+
+  .admin-catalog-steps {
+    grid-template-columns: 1fr;
+    gap: 8px;
+  }
+
+  .admin-catalog-step {
+    min-height: 132px;
   }
 
   .admin-welcome {

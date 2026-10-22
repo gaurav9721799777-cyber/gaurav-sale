@@ -1,13 +1,14 @@
 import React from "react";
 import brandPowerShowcase from "../assets/brand-power-showcase.svg";
+import { assetSource, type AssetImport } from "../utils/assetSource";
 
 type PageHeadingProps = {
   eyebrow: string;
   title: React.ReactNode;
   description: string;
-  image?: string;
+  image?: AssetImport;
   imageAlt?: string;
-  fullImage?: string;
+  fullImage?: AssetImport;
 };
 
 export default function PageHeading({
@@ -24,7 +25,7 @@ export default function PageHeading({
         <>
           <img
             className="gs-page-banner-full-art"
-            src={fullImage}
+            src={assetSource(fullImage)}
             alt={imageAlt || ""}
           />
           <span className="gs-page-banner-full-tint" aria-hidden="true" />
@@ -38,8 +39,11 @@ export default function PageHeading({
         <>
           <img
             className={`gs-page-banner-art${image ? " is-photo" : ""}`}
-            src={image || brandPowerShowcase}
-            alt={imageAlt || "Microtek, V-Guard and SF Sonic inverter and battery range"}
+            src={assetSource(image || brandPowerShowcase)}
+            alt={
+              imageAlt ||
+              "Microtek, V-Guard and SF Sonic inverter and battery range"
+            }
           />
           <div className="gs-page-banner-shade" />
           <div className="gs-container gs-page-heading">

@@ -1,5 +1,6 @@
 import inverterPhoto from "../assets/real-home-inverter.jpg";
 import batteryPhoto from "../assets/real-lead-acid-battery.jpg";
+import { assetSource } from "../utils/assetSource";
 
 export type ProductBrand = string;
 export type ProductCategory = string;
@@ -25,7 +26,7 @@ export const products: Product[] = [
     capacity: "Select capacity for your home",
     price: "Ask for price",
     description: "Ask us about current Microtek inverter models and availability.",
-    image: inverterPhoto,
+    image: assetSource(inverterPhoto),
     badge: "Microtek",
   },
   {
@@ -36,7 +37,7 @@ export const products: Product[] = [
     capacity: "Choose a compatible battery",
     price: "Ask for price",
     description: "Find a battery option to pair with your compatible inverter.",
-    image: batteryPhoto,
+    image: assetSource(batteryPhoto),
     badge: "Microtek",
   },
   {
@@ -47,7 +48,7 @@ export const products: Product[] = [
     capacity: "Select capacity for your home",
     price: "Ask for price",
     description: "Ask us about current Luminous inverter models and availability.",
-    image: inverterPhoto,
+    image: assetSource(inverterPhoto),
     badge: "Luminous",
   },
   {
@@ -58,7 +59,7 @@ export const products: Product[] = [
     capacity: "Choose a compatible battery",
     price: "Ask for price",
     description: "Find a battery option to pair with your compatible inverter.",
-    image: batteryPhoto,
+    image: assetSource(batteryPhoto),
     badge: "Luminous",
   },
 ];

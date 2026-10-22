@@ -12,6 +12,7 @@ import {
   IconTruck,
 } from "@tabler/icons-react";
 import ProductCard from "../components/ProductCard";
+import ServerIssueState from "../components/ServerIssueState";
 import {
   products as fallbackProducts,
   type Product as CatalogProduct,
@@ -22,7 +23,10 @@ import {
   type Category,
 } from "../services/CategoryServiceService";
 import { getBrands } from "../services/BrandService";
-import { apiErrorMessage } from "../services/apiError";
+import {
+  apiErrorMessage,
+  isServerUnavailableError,
+} from "../services/apiError";
 import type { CartLine } from "../services/CartService";
 import {
   allProducts,
@@ -33,21 +37,27 @@ import {
 import microtekBanner from "../assets/microtek-home-banner.png";
 import vGuardBanner from "../assets/v-guard-home-banner.png";
 import sfSonicBanner from "../assets/sf-sonic-home-banner.png";
-import premiumBrandsBanner from "../assets/premium-brands-home-banner.png";
+import microtekLogo from "../assets/microtek-logo.png";
+import vGuardLogo from "../assets/v-guard-logo.png";
+import sfSonicLogo from "../assets/sf-sonic-logo.png";
 import founderPortrait from "../assets/amit-rai-home.png";
+import { assetSource } from "../utils/assetSource";
 
 const slides = [
   {
     label: "Microtek",
     image: microtekBanner,
+    logo: microtekLogo,
   },
   {
     label: "V-Guard",
     image: vGuardBanner,
+    logo: vGuardLogo,
   },
   {
     label: "SF Sonic",
     image: sfSonicBanner,
+    logo: sfSonicLogo,
   },
 ];
 
@@ -69,13 +79,19 @@ export default function HomePage({ navigate, onAdd, cart }: HomePageProps) {
   const [categories, setCategories] = useState<Category[]>([]);
   const [categoriesLoading, setCategoriesLoading] = useState(true);
   const [categoriesError, setCategoriesError] = useState<string | null>(null);
-  const [featuredProducts, setFeaturedProducts] = useState<ServiceProduct[]>([]);
+  const [categoriesServerIssue, setCategoriesServerIssue] = useState(false);
+  const [featuredProducts, setFeaturedProducts] = useState<ServiceProduct[]>(
+    [],
+  );
   const [productsLoading, setProductsLoading] = useState(true);
   const [productsError, setProductsError] = useState<string | null>(null);
+  const [productsServerIssue, setProductsServerIssue] = useState(false);
   const touchStartX = useRef<number | null>(null);
 
   const moveSlide = (direction: number) => {
-    setActiveSlide((current) => (current + direction + slides.length) % slides.length);
+    setActiveSlide(
+      (current) => (current + direction + slides.length) % slides.length,
+    );
   };
 
   useEffect(() => {
@@ -88,7 +104,10 @@ export default function HomePage({ navigate, onAdd, cart }: HomePageProps) {
       .catch((error: unknown) => {
         if (!active) return;
         setCategories([]);
-        setCategoriesError(apiErrorMessage(error, "Services could not be loaded right now."));
+        setCategoriesError(
+          apiErrorMessage(error, "Services could not be loaded right now."),
+        );
+        setCategoriesServerIssue(isServerUnavailableError(error));
       })
       .finally(() => {
         if (active) setCategoriesLoading(false);
@@ -105,9 +124,9 @@ export default function HomePage({ navigate, onAdd, cart }: HomePageProps) {
       getCategories(true).catch(() => []),
       getBrands(true).catch(() => []),
     ])
-      .then(([items, productCategories, brands]) => {
-        if (!active) return;
-        const activeProducts = items.filter(
+    .then(([items, productCategories, brands]) => {
+      if (!active) return;
+      const activeProducts = items.filter(
           (product) =>
             product.active !== false &&
             productIsInActiveCatalog(product, productCategories, brands),
@@ -118,7 +137,10 @@ export default function HomePage({ navigate, onAdd, cart }: HomePageProps) {
         if (!active) return;
         console.error("Could not load featured products.", error);
         setFeaturedProducts([]);
-        setProductsError(apiErrorMessage(error, "Products could not be loaded right now."));
+        setProductsError(
+          apiErrorMessage(error, "Products could not be loaded right now."),
+        );
+        setProductsServerIssue(isServerUnavailableError(error));
       })
       .finally(() => {
         if (active) setProductsLoading(false);
@@ -144,20 +166,64 @@ export default function HomePage({ navigate, onAdd, cart }: HomePageProps) {
 
   return (
     <>
-      <section className="gs-brand-hero" aria-label="Featured brand banners" onTouchStart={(event) => { touchStartX.current = event.touches[0]?.clientX ?? null; }} onTouchEnd={(event) => {
-        if (touchStartX.current === null) return;
-        const distance = event.changedTouches[0].clientX - touchStartX.current;
-        if (Math.abs(distance) > 45) moveSlide(distance < 0 ? 1 : -1);
-        touchStartX.current = null;
-      }}>
-        <button className="gs-brand-banner" type="button" onClick={() => navigate("/products")} aria-label={`Explore ${slides[activeSlide].label} products`}>
-          <img key={slides[activeSlide].label} src={slides[activeSlide].image} alt={`${slides[activeSlide].label} inverter and battery promotion`} />
+      <section
+        className="gs-brand-hero"
+        aria-label="Featured brand banners"
+        onTouchStart={(event) => {
+          touchStartX.current = event.touches[0]?.clientX ?? null;
+        }}
+        onTouchEnd={(event) => {
+          if (touchStartX.current === null) return;
+          const distance =
+            event.changedTouches[0].clientX - touchStartX.current;
+          if (Math.abs(distance) > 45) moveSlide(distance < 0 ? 1 : -1);
+          touchStartX.current = null;
+        }}
+      >
+        <button
+          className="gs-brand-banner"
+          type="button"
+          onClick={() => navigate("/products")}
+          aria-label={`Explore ${slides[activeSlide].label} products`}
+        >
+          <img
+            key={slides[activeSlide].label}
+            src={assetSource(slides[activeSlide].image)}
+            alt={`${slides[activeSlide].label} inverter and battery promotion`}
+          />
         </button>
-        <button className="gs-brand-arrow is-previous" type="button" aria-label="Previous banner" onClick={() => moveSlide(-1)}><IconChevronLeft size={24} /></button>
-        <button className="gs-brand-arrow is-next" type="button" aria-label="Next banner" onClick={() => moveSlide(1)}><IconChevronRight size={24} /></button>
-        <div className="gs-brand-banner-controls" role="group" aria-label="Choose a banner">
+        <button
+          className="gs-brand-arrow is-previous"
+          type="button"
+          aria-label="Previous banner"
+          onClick={() => moveSlide(-1)}
+        >
+          <IconChevronLeft size={24} />
+        </button>
+        <button
+          className="gs-brand-arrow is-next"
+          type="button"
+          aria-label="Next banner"
+          onClick={() => moveSlide(1)}
+        >
+          <IconChevronRight size={24} />
+        </button>
+        <div
+          className="gs-brand-banner-controls"
+          role="group"
+          aria-label="Choose a banner"
+        >
           {slides.map((item, index) => (
-            <button key={item.label} type="button" className={activeSlide === index ? "is-active" : ""} aria-label={`Show banner ${index + 1}: ${item.label}`} aria-pressed={activeSlide === index} onClick={() => setActiveSlide(index)}><span className="gs-visually-hidden">Banner {index + 1}</span></button>
+            <button
+              key={item.label}
+              type="button"
+              className={activeSlide === index ? "is-active" : ""}
+              aria-label={`Show banner ${index + 1}: ${item.label}`}
+              aria-pressed={activeSlide === index}
+              onClick={() => setActiveSlide(index)}
+            >
+              <span className="gs-visually-hidden">Banner {index + 1}</span>
+            </button>
           ))}
         </div>
       </section>
@@ -199,15 +265,15 @@ export default function HomePage({ navigate, onAdd, cart }: HomePageProps) {
         <div className="gs-container gs-founder-card">
           <div className="gs-founder-photo">
             <img
-              src={founderPortrait}
-              alt="Gaurav Rai, representing Gaurav Sales"
+              src={assetSource(founderPortrait)}
+              alt="Amrit Rai, representing Gaurav Sales"
               loading="lazy"
             />
             <span>GAURAV SALES</span>
           </div>
           <div className="gs-founder-copy">
             <span className="gs-eyebrow">THE PEOPLE BEHIND GAURAV SALES</span>
-            <h2>Meet Gaurav Rai.</h2>
+            <h2>Meet Amrit Rai.</h2>
             <p>
               Personal guidance, dependable products, and thoughtful support to
               help every home find the right backup power.
@@ -244,17 +310,32 @@ export default function HomePage({ navigate, onAdd, cart }: HomePageProps) {
             </button>
           </div>
           {categoriesLoading ? (
-            <div className="gs-home-empty-state gs-home-empty-loading" role="status">
+            <div
+              className="gs-home-empty-state gs-home-empty-loading"
+              role="status"
+            >
               <strong>Finding the right services for you…</strong>
             </div>
           ) : categoriesError ? (
-            <div className="gs-home-empty-state" role="status">
-              <span className="gs-home-empty-icon"><IconBolt size={25} /></span>
-              <strong>Services Could Not Be Loaded</strong>
-              <p>{categoriesError}</p>
-            </div>
+            categoriesServerIssue ? (
+              <ServerIssueState
+                message={categoriesError}
+                onRetry={() => window.location.reload()}
+                compact
+              />
+            ) : (
+              <div className="gs-home-empty-state" role="status">
+                <span className="gs-home-empty-icon">
+                  <IconBolt size={25} />
+                </span>
+                <strong>Services Could Not Be Loaded</strong>
+                <p>{categoriesError}</p>
+              </div>
+            )
           ) : categories.length > 0 ? (
-            <div className="gs-category-grid">
+            <div
+              className={`gs-category-grid${categories.length === 1 ? " has-single-category" : ""}`}
+            >
               {categories.map((category) => {
                 const isBattery = /battery|batter/i.test(category.name);
                 const isCharger = /charg/i.test(category.name);
@@ -263,8 +344,13 @@ export default function HomePage({ navigate, onAdd, cart }: HomePageProps) {
                   : isCharger
                     ? IconPlug
                     : IconBolt;
-                const visual = isBattery ? "battery" : isCharger ? "charger" : "inverter";
-                const routeSlug = category.slug || slugifyCategory(category.name);
+                const visual = isBattery
+                  ? "battery"
+                  : isCharger
+                    ? "charger"
+                    : "inverter";
+                const routeSlug =
+                  category.slug || slugifyCategory(category.name);
                 return (
                   <button
                     key={category.id}
@@ -278,7 +364,10 @@ export default function HomePage({ navigate, onAdd, cart }: HomePageProps) {
                     <span
                       className={`gs-category-visual gs-category-visual-${visual}`}
                     >
-                      <span className="gs-category-icon-circle" aria-hidden="true">
+                      <span
+                        className="gs-category-icon-circle"
+                        aria-hidden="true"
+                      >
                         <CategoryIcon size={34} stroke={1.7} />
                       </span>
                     </span>
@@ -299,7 +388,9 @@ export default function HomePage({ navigate, onAdd, cart }: HomePageProps) {
             </div>
           ) : (
             <div className="gs-home-empty-state">
-              <span className="gs-home-empty-icon"><IconBolt size={25} /></span>
+              <span className="gs-home-empty-icon">
+                <IconBolt size={25} />
+              </span>
               <strong>Service Not Available</strong>
               <p>Our services are being updated. Please check back soon.</p>
             </div>
@@ -307,15 +398,18 @@ export default function HomePage({ navigate, onAdd, cart }: HomePageProps) {
         </div>
       </section>
 
-      <section className="gs-home-products" aria-labelledby="gs-home-products-heading">
+      <section
+        className="gs-home-products"
+        aria-labelledby="gs-home-products-heading"
+      >
         <div className="gs-container">
           <div className="gs-section-heading">
             <div>
               <span className="gs-eyebrow">OUR PRODUCTS</span>
               <h2 id="gs-home-products-heading">Power you can count on.</h2>
               <p>
-                Explore dependable inverters and batteries selected for
-                everyday home backup.
+                Explore dependable inverters and batteries selected for everyday
+                home backup.
               </p>
             </div>
             <button
@@ -331,13 +425,25 @@ export default function HomePage({ navigate, onAdd, cart }: HomePageProps) {
               Loading products…
             </p>
           ) : productsError ? (
-            <div className="gs-home-empty-state" role="status">
-              <span className="gs-home-empty-icon"><IconBatteryCharging size={25} /></span>
-              <strong>Products Could Not Be Loaded</strong>
-              <p>{productsError}</p>
-            </div>
+            productsServerIssue ? (
+              <ServerIssueState
+                message={productsError}
+                onRetry={() => window.location.reload()}
+                compact
+              />
+            ) : (
+              <div className="gs-home-empty-state" role="status">
+                <span className="gs-home-empty-icon">
+                  <IconBatteryCharging size={25} />
+                </span>
+                <strong>Products Could Not Be Loaded</strong>
+                <p>{productsError}</p>
+              </div>
+            )
           ) : featuredProducts.length > 0 ? (
-            <div className="gs-product-grid">
+            <div
+              className={`gs-product-grid${featuredProducts.length === 1 ? " is-single-product" : ""}`}
+            >
               {featuredProducts.map((product) => {
                 const fallbackImage = fallbackProducts.find(
                   (item) =>
@@ -386,7 +492,9 @@ export default function HomePage({ navigate, onAdd, cart }: HomePageProps) {
             </div>
           ) : (
             <div className="gs-home-empty-state">
-              <span className="gs-home-empty-icon"><IconBatteryCharging size={25} /></span>
+              <span className="gs-home-empty-icon">
+                <IconBatteryCharging size={25} />
+              </span>
               <strong>Product Not Available</strong>
               <p>Our products are being updated. Please check back soon.</p>
             </div>
@@ -394,10 +502,45 @@ export default function HomePage({ navigate, onAdd, cart }: HomePageProps) {
         </div>
       </section>
 
-      <section className="gs-premium-brands-section" aria-label="Premium inverter and battery brands">
-        <button className="gs-premium-brands-banner" type="button" onClick={() => navigate("/products")} aria-label="Explore our inverter and battery products">
-          <img src={premiumBrandsBanner} alt="Premium brands: Microtek, SF Sonic and V-Guard. Reliable power for a brighter tomorrow." loading="lazy" />
-        </button>
+      <section
+        className="gs-home-partners"
+        aria-labelledby="gs-home-partners-heading"
+      >
+        <div className="gs-container">
+          <div className="gs-home-partners-frame">
+            <div className="gs-home-partners-heading">
+              <span className="gs-eyebrow">TRUSTED POWER BRANDS</span>
+              <h2 id="gs-home-partners-heading">
+                Trusted names. Reliable power.
+              </h2>
+              <p>
+                Explore dependable inverter and battery options from brands
+                trusted by homes across India.
+              </p>
+            </div>
+            <div className="gs-home-partner-grid">
+              {slides.map((brand) => (
+                <button
+                  className="gs-home-partner-card"
+                  key={brand.label}
+                  type="button"
+                  onClick={() => navigate("/products")}
+                  aria-label={`Browse ${brand.label} products`}
+                >
+                  <span className="gs-home-partner-logo">
+                    <img src={assetSource(brand.logo)} alt={`${brand.label} logo`} />
+                  </span>
+                  <span className="gs-home-partner-link">
+                    Explore products <IconArrowRight size={15} />
+                  </span>
+                </button>
+              ))}
+            </div>
+            <span className="gs-home-partners-caption">
+              Quality products for the backup power your home needs.
+            </span>
+          </div>
+        </div>
       </section>
 
       <section className="gs-feature-band">
@@ -418,6 +561,7 @@ export default function HomePage({ navigate, onAdd, cart }: HomePageProps) {
           </Button>
         </div>
       </section>
+
     </>
   );
 }

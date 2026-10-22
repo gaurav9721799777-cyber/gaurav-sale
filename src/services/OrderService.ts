@@ -9,6 +9,7 @@ export type PlaceOrderRequest = {
   city: string;
   postalCode: string;
   countryRegion: string;
+  deliveryLocation: { latitude: number; longitude: number };
   deliveryInstructions?: string;
   paymentMethod: "CASH_ON_DELIVERY";
 };

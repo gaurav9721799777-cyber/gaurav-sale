@@ -10,30 +10,33 @@ import {
   IconBrandYoutube,
   IconBolt,
   IconChevronDown,
-  IconCreditCard,
   IconDeviceDesktop,
-  IconHelpCircle,
-  IconInfoCircle,
   IconMenu2,
-  IconPackage,
-  IconPhone,
+  IconSearch,
   IconShieldCheck,
   IconShoppingBag,
-  IconTruck,
-  IconUserCircle,
   IconX,
 } from "@tabler/icons-react";
 
 import brandLogo from "./assets/gs-logo.png";
+import { assetSource } from "./utils/assetSource";
 
 import AppRoutes, { type RoutePath } from "./Route/AppRoutes";
 
-import { addCartItem, clearCart as clearCartRequest, getCart, normalizeCartLines, removeCartItem, updateCartItem, type CartLine } from "./services/CartService";
-import { getCategories, type Category } from "./services/CategoryServiceService";
+import {
+  addCartItem,
+  clearCart as clearCartRequest,
+  getCart,
+  normalizeCartLines,
+  removeCartItem,
+  updateCartItem,
+  type CartLine,
+} from "./services/CartService";
+import {
+  getCategories,
+  type Category,
+} from "./services/CategoryServiceService";
 import { apiErrorMessage } from "./services/apiError";
-
-import "./App.css";
-import "./StorePages.css";
 
 const navigation: {
   label: string;
@@ -84,9 +87,10 @@ function AppContent() {
     const storageKey = "gaurav-sales-cart-id";
     const existing = window.localStorage.getItem(storageKey);
     if (existing) return existing;
-    const nextId = typeof window.crypto?.randomUUID === "function"
-      ? window.crypto.randomUUID()
-      : `cart-${Date.now()}-${Math.random().toString(36).slice(2)}`;
+    const nextId =
+      typeof window.crypto?.randomUUID === "function"
+        ? window.crypto.randomUUID()
+        : `cart-${Date.now()}-${Math.random().toString(36).slice(2)}`;
     window.localStorage.setItem(storageKey, nextId);
     return nextId;
   });
@@ -94,18 +98,26 @@ function AppContent() {
   const [cartBusy, setCartBusy] = useState(true);
   const [cartMessage, setCartMessage] = useState("");
   const [adminAuthenticated, setAdminAuthenticated] = useState(false);
+  const [adminAuthLoading, setAdminAuthLoading] = useState(true);
   const [socialLinksOpen, setSocialLinksOpen] = useState(false);
   const [productCategories, setProductCategories] = useState<Category[]>([]);
 
   useEffect(() => {
     let active = true;
     getCart(cartId)
-      .then((record) => { if (active) setCart(normalizeCartLines(record)); })
-      .catch((error: unknown) => {
-        if (active) setCartMessage(apiErrorMessage(error, "Could not load your bag."));
+      .then((record) => {
+        if (active) setCart(normalizeCartLines(record));
       })
-      .finally(() => { if (active) setCartBusy(false); });
-    return () => { active = false; };
+      .catch((error: unknown) => {
+        if (active)
+          setCartMessage(apiErrorMessage(error, "Could not load your bag."));
+      })
+      .finally(() => {
+        if (active) setCartBusy(false);
+      });
+    return () => {
+      active = false;
+    };
   }, [cartId]);
 
   useEffect(() => {
@@ -115,8 +127,29 @@ function AppContent() {
         if (active) setProductCategories(categories);
       })
       .catch((error: unknown) => {
-        console.error("Could not load product categories for navigation.", error);
+        console.error(
+          "Could not load product categories for navigation.",
+          error,
+        );
         if (active) setProductCategories([]);
+      });
+    return () => {
+      active = false;
+    };
+  }, []);
+
+  useEffect(() => {
+    let active = true;
+    fetch("/api/auth/admin")
+      .then((response) => response.json())
+      .then((result: { authenticated?: boolean }) => {
+        if (active) setAdminAuthenticated(result.authenticated === true);
+      })
+      .catch(() => {
+        if (active) setAdminAuthenticated(false);
+      })
+      .finally(() => {
+        if (active) setAdminAuthLoading(false);
       });
     return () => {
       active = false;
@@ -130,12 +163,22 @@ function AppContent() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   const [productsMenuOpen, setProductsMenuOpen] = useState(false);
+  const [productSearch, setProductSearch] = useState(
+    () => new URLSearchParams(location.search).get("search") ?? "",
+  );
+
+  useEffect(() => {
+    setProductSearch(new URLSearchParams(location.search).get("search") ?? "");
+  }, [location.search]);
 
   // ==========================================
   // ADD TO CART
   // ==========================================
 
-  const runCartAction = async (action: () => Promise<void>, successMessage: string): Promise<void> => {
+  const runCartAction = async (
+    action: () => Promise<void>,
+    successMessage: string,
+  ): Promise<void> => {
     setCartBusy(true);
     setCartMessage("");
     try {
@@ -144,7 +187,10 @@ function AppContent() {
       setCart(normalizeCartLines(latestCart));
       setCartMessage(successMessage);
     } catch (error) {
-      const message = apiErrorMessage(error, "Could not update your bag. Please try again.");
+      const message = apiErrorMessage(
+        error,
+        "Could not update your bag. Please try again.",
+      );
       setCartMessage(message);
       throw error;
     } finally {
@@ -153,13 +199,25 @@ function AppContent() {
   };
 
   const addToCart = (productId: string, quantity = 1): Promise<void> =>
-    runCartAction(() => addCartItem(cartId, productId, quantity), "Added to your bag.");
+    runCartAction(
+      () => addCartItem(cartId, productId, quantity),
+      "Added to your bag.",
+    );
 
   const removeFromCart = (productId: string): Promise<void> =>
-    runCartAction(() => removeCartItem(cartId, productId), "Item removed from your bag.");
+    runCartAction(
+      () => removeCartItem(cartId, productId),
+      "Item removed from your bag.",
+    );
 
-  const changeCartQuantity = (productId: string, quantity: number): Promise<void> =>
-    runCartAction(() => updateCartItem(cartId, productId, quantity), "Bag updated.");
+  const changeCartQuantity = (
+    productId: string,
+    quantity: number,
+  ): Promise<void> =>
+    runCartAction(
+      () => updateCartItem(cartId, productId, quantity),
+      "Bag updated.",
+    );
 
   const emptyCart = (): Promise<void> =>
     runCartAction(() => clearCartRequest(cartId), "Bag cleared.");
@@ -167,7 +225,7 @@ function AppContent() {
   const handleOrderPlaced = async (): Promise<void> => {
     setCart([]);
     setCartMessage("");
-  };;
+  };
 
   // ==========================================
   // NAVIGATION
@@ -193,23 +251,9 @@ function AppContent() {
   const cartCount = cart.reduce((total, line) => total + line.quantity, 0);
 
   return (
-    <div className={`gs-site${path.startsWith("/admin") ? " is-admin-route" : ""}`}>
-      {/* ========================================
-          ANNOUNCEMENT
-      ========================================= */}
-
-      <div className="gs-announcement">
-        <span>
-          <IconBolt size={15} fill="currentColor" />
-          Powering homes with confidence
-        </span>
-
-        <button onClick={() => go("/products")}>
-          Explore inverter range
-          <IconArrowRight size={14} />
-        </button>
-      </div>
-
+    <div
+      className={`gs-site${path.startsWith("/admin") ? " is-admin-route" : ""}`}
+    >
       {/* ========================================
           HEADER
       ========================================= */}
@@ -223,22 +267,78 @@ function AppContent() {
           }
         }}
       >
-        <div className="gs-container gs-header-inner">
-          {/* BRAND */}
+        <div className="gs-header-primary">
+          <div className="gs-container gs-header-primary-inner">
+            <button
+              className="gs-brand"
+              onClick={() => go("/")}
+              aria-label="Gaurav Sales home"
+            >
+              <img src={assetSource(brandLogo)} alt="Gaurav Sales" />
+              <span>
+                Gaurav Sales
+                <small>INVERTERS &amp; SOLAR POWER</small>
+              </span>
+            </button>
+            <form
+              className="gs-header-search"
+              role="search"
+              onSubmit={(event) => {
+                event.preventDefault();
+                const query = productSearch.trim();
+                if (query) go(`/products?search=${encodeURIComponent(query)}`);
+              }}
+            >
+              <IconSearch size={19} aria-hidden="true" />
+              <input
+                type="search"
+                aria-label="Search products"
+                placeholder="Search inverters, batteries, brands..."
+                value={productSearch}
+                onChange={(event) => setProductSearch(event.currentTarget.value)}
+              />
+              <button type="submit" disabled={!productSearch.trim()}>
+                Search
+              </button>
+            </form>
+            <div className="gs-header-actions">
+              <button
+                className="gs-login-button"
+                onClick={() => go("/admin/login")}
+                aria-label="Log in to the admin dashboard"
+              >
+                <span className="gs-account-avatar" aria-hidden="true">
+                  GS
+                </span>
+                <span>Login</span>
+              </button>
+              <button
+                className="gs-cart-button"
+                onClick={() => go("/order")}
+                aria-label={`Place order, ${cartCount} items in bag`}
+              >
+                <IconShoppingBag size={19} />
+                <span>Order</span>
+                <b>{cartCount}</b>
+              </button>
+              <button
+                className="gs-mobile-toggle"
+                onClick={() => setMobileMenuOpen((open) => !open)}
+                aria-label={
+                  mobileMenuOpen
+                    ? "Close navigation menu"
+                    : "Open navigation menu"
+                }
+                aria-expanded={mobileMenuOpen}
+              >
+                {mobileMenuOpen ? <IconX /> : <IconMenu2 />}
+              </button>
+            </div>
+          </div>
+        </div>
 
-          <button
-            className="gs-brand"
-            onClick={() => go("/")}
-            aria-label="Gaurav Sales home"
-          >
-            <img src={brandLogo} alt="Gaurav Sales" />
-
-            <span>
-              Gaurav Sales
-              <small>INVERTERS &amp; SOLAR POWER</small>
-            </span>
-          </button>
-
+        <div className="gs-header-navigation">
+          <div className="gs-container gs-header-navigation-inner">
           {/* ====================================
               DESKTOP NAVIGATION
           ===================================== */}
@@ -251,20 +351,27 @@ function AppContent() {
               onClick={() => go("/about")}
               aria-current={path === "/about" ? "page" : undefined}
             >
-              <IconInfoCircle className="gs-nav-icon gs-nav-icon-about" size={16} />
               About us
             </button>
 
             {/* PRODUCTS */}
 
-            <span className="gs-products-nav-group">
+            <span
+              className={`gs-products-nav-group${
+                path === "/product" || path.startsWith("/products")
+                  ? " is-active"
+                  : ""
+              }`}
+            >
               <button
-                className={`gs-products-trigger${
-                  path === "/product" || path.startsWith("/products") ? " is-active" : ""
-                }`}
+                className="gs-products-trigger"
+                aria-current={
+                  path === "/product" || path.startsWith("/products")
+                    ? "page"
+                    : undefined
+                }
                 onClick={() => go("/product")}
               >
-                <IconPackage className="gs-nav-icon gs-nav-icon-products" size={16} />
                 Products
               </button>
               {productCategories.length > 0 && (
@@ -272,11 +379,15 @@ function AppContent() {
                   className="gs-products-dropdown-toggle"
                   type="button"
                   onClick={() => setProductsMenuOpen((open) => !open)}
-                  aria-label={productsMenuOpen ? "Hide product categories" : "Show product categories"}
+                  aria-label={
+                    productsMenuOpen
+                      ? "Hide product categories"
+                      : "Show product categories"
+                  }
                   aria-expanded={productsMenuOpen}
                   aria-controls="gs-products-menu"
                 >
-                  <IconChevronDown size={14} />
+                  <IconChevronDown size={16} />
                 </button>
               )}
             </span>
@@ -287,7 +398,6 @@ function AppContent() {
               className={path === "/shipping" ? "is-active" : ""}
               onClick={() => go("/shipping")}
             >
-              <IconTruck className="gs-nav-icon gs-nav-icon-shipping" size={16} />
               Shipping
             </button>
 
@@ -297,7 +407,6 @@ function AppContent() {
               className={path === "/payment" ? "is-active" : ""}
               onClick={() => go("/payment")}
             >
-              <IconCreditCard className="gs-nav-icon gs-nav-icon-payment" size={16} />
               Payment
             </button>
 
@@ -307,7 +416,6 @@ function AppContent() {
               className={path === "/contact" ? "is-active" : ""}
               onClick={() => go("/contact")}
             >
-              <IconPhone className="gs-nav-icon gs-nav-icon-contact" size={16} />
               Contact
             </button>
 
@@ -317,52 +425,10 @@ function AppContent() {
               className={path === "/faq" ? "is-active" : ""}
               onClick={() => go("/faq")}
             >
-              <IconHelpCircle className="gs-nav-icon gs-nav-icon-faq" size={16} />
               FAQs
             </button>
           </nav>
 
-          {/* ====================================
-              HEADER ACTIONS
-          ===================================== */}
-
-          <div className="gs-header-actions">
-            <button
-              className="gs-login-button"
-              onClick={() => go("/admin/login")}
-            >
-              <IconUserCircle size={16} />
-              <span>Login</span>
-            </button>
-
-            {/* ORDER */}
-
-            <button
-              className="gs-cart-button"
-              onClick={() => go("/order")}
-              aria-label={`Place order, ${cartCount} items in bag`}
-            >
-              <IconShoppingBag size={19} />
-
-              <span>Order</span>
-
-              <b>{cartCount}</b>
-            </button>
-
-            {/* MOBILE */}
-
-            <button
-              className="gs-mobile-toggle"
-              onClick={() => setMobileMenuOpen((open) => !open)}
-              aria-label={
-                mobileMenuOpen
-                  ? "Close navigation menu"
-                  : "Open navigation menu"
-              }
-              aria-expanded={mobileMenuOpen}
-            >
-              {mobileMenuOpen ? <IconX /> : <IconMenu2 />}
-            </button>
           </div>
         </div>
 
@@ -378,7 +444,11 @@ function AppContent() {
                 {productCategories.map((category) => (
                   <button
                     key={category.id}
-                    onClick={() => go(`/products/category/${encodeURIComponent(category.slug)}`)}
+                    onClick={() =>
+                      go(
+                        `/products/category/${encodeURIComponent(category.slug)}`,
+                      )
+                    }
                   >
                     {category.name}
                     <IconArrowRight size={14} />
@@ -398,15 +468,25 @@ function AppContent() {
                 <div className="gs-mega-grid">
                   {productCategories.map((category) => {
                     const isBattery = /battery|batter/i.test(category.name);
-                    const CategoryIcon = isBattery ? IconBatteryCharging : IconDeviceDesktop;
+                    const CategoryIcon = isBattery
+                      ? IconBatteryCharging
+                      : IconDeviceDesktop;
                     return (
                       <button
                         key={category.id}
-                        onClick={() => go(`/products/category/${encodeURIComponent(category.slug)}`)}
+                        onClick={() =>
+                          go(
+                            `/products/category/${encodeURIComponent(category.slug)}`,
+                          )
+                        }
                       >
-                        <span><CategoryIcon /></span>
+                        <span>
+                          <CategoryIcon />
+                        </span>
                         <strong>{category.name}</strong>
-                        <small>{category.description || "Explore available products"}</small>
+                        <small>
+                          {category.description || "Explore available products"}
+                        </small>
                       </button>
                     );
                   })}
@@ -437,22 +517,21 @@ function AppContent() {
 
         {mobileMenuOpen && (
           <nav className="gs-mobile-nav" aria-label="Mobile navigation">
-            {navigation.map((item) => (
-              <button key={item.path} onClick={() => go(item.path)}>
-                {item.label}
-
-                <IconArrowRight size={16} />
-              </button>
-            ))}
-
-            <button onClick={() => go("/order")}>
-              Place an order
-              <IconArrowRight size={16} />
-            </button>
-            <button onClick={() => go("/admin/login")}>
-              Login
-              <IconArrowRight size={16} />
-            </button>
+            {navigation.map((item) => {
+              const isActive =
+                path === item.path ||
+                (item.path === "/product" && path.startsWith("/products"));
+              return (
+                <button
+                  key={item.path}
+                  className={isActive ? "is-active" : ""}
+                  aria-current={isActive ? "page" : undefined}
+                  onClick={() => go(item.path)}
+                >
+                  {item.label}
+                </button>
+              );
+            })}
           </nav>
         )}
       </header>
@@ -464,6 +543,7 @@ function AppContent() {
       <main>
         <AppRoutes
           path={path}
+          searchQuery={new URLSearchParams(location.search).get("search") ?? ""}
           navigate={go}
           cart={cart}
           cartId={cartId}
@@ -475,11 +555,13 @@ function AppContent() {
           cartBusy={cartBusy}
           cartMessage={cartMessage}
           adminAuthenticated={adminAuthenticated}
+          adminAuthLoading={adminAuthLoading}
           onAdminLogin={() => {
             setAdminAuthenticated(true);
             go("/admin/dashboard");
           }}
           onAdminLogout={() => {
+            void fetch("/api/auth/admin", { method: "DELETE" });
             setAdminAuthenticated(false);
             go("/");
           }}
@@ -497,7 +579,7 @@ function AppContent() {
 
             <div className="gs-footer-brand">
               <button className="gs-brand" onClick={() => go("/")}>
-                <img src={brandLogo} alt="Gaurav Sales" />
+                <img src={assetSource(brandLogo)} alt="Gaurav Sales" />
 
                 <span>
                   Gaurav Sales
@@ -508,10 +590,40 @@ function AppContent() {
               <p>
                 Dependable inverter solutions and helpful service for your home.
               </p>
-              <div className="gs-footer-social" aria-label="Follow Gaurav Sales">
-                <a href="https://www.facebook.com/" target="_blank" rel="noreferrer" aria-label="Visit Facebook" title="Facebook" className="social-facebook"><IconBrandFacebook /></a>
-                <a href="https://www.instagram.com/" target="_blank" rel="noreferrer" aria-label="Visit Instagram" title="Instagram" className="social-instagram"><IconBrandInstagram /></a>
-                <a href="https://www.youtube.com/" target="_blank" rel="noreferrer" aria-label="Visit YouTube" title="YouTube" className="social-youtube"><IconBrandYoutube /></a>
+              <div
+                className="gs-footer-social"
+                aria-label="Follow Gaurav Sales"
+              >
+                <a
+                  href="https://www.facebook.com/"
+                  target="_blank"
+                  rel="noreferrer"
+                  aria-label="Visit Facebook"
+                  title="Facebook"
+                  className="social-facebook"
+                >
+                  <IconBrandFacebook />
+                </a>
+                <a
+                  href="https://www.instagram.com/"
+                  target="_blank"
+                  rel="noreferrer"
+                  aria-label="Visit Instagram"
+                  title="Instagram"
+                  className="social-instagram"
+                >
+                  <IconBrandInstagram />
+                </a>
+                <a
+                  href="https://www.youtube.com/"
+                  target="_blank"
+                  rel="noreferrer"
+                  aria-label="Visit YouTube"
+                  title="YouTube"
+                  className="social-youtube"
+                >
+                  <IconBrandYoutube />
+                </a>
               </div>
             </div>
 
@@ -607,7 +719,11 @@ function AppContent() {
         <button
           type="button"
           className="gs-social-toggle"
-          aria-label={socialLinksOpen ? "Hide social media links" : "Show social media links"}
+          aria-label={
+            socialLinksOpen
+              ? "Hide social media links"
+              : "Show social media links"
+          }
           aria-expanded={socialLinksOpen}
           aria-controls="gs-social-links"
           onClick={() => setSocialLinksOpen((open) => !open)}

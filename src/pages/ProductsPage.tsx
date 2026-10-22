@@ -5,6 +5,7 @@ import { IconArrowRight, IconBolt } from "@tabler/icons-react";
 import ProductCard from "../components/ProductCard";
 import PageHeading from "../components/PageHeading";
 import AppLoader from "../components/AppLoader";
+import ServerIssueState from "../components/ServerIssueState";
 
 import {
   products as fallbackProducts,
@@ -27,13 +28,17 @@ import {
 } from "../services/ProductService";
 import { getCategories, getCategoryBySlug, type Category } from "../services/CategoryServiceService";
 import { brandKey, getBrands, type Brand } from "../services/BrandService";
-import { apiErrorMessage } from "../services/apiError";
+import {
+  apiErrorMessage,
+  isServerUnavailableError,
+} from "../services/apiError";
 import productPageHero from "../assets/product-page-hero.jpg";
 
 type ProductsPageProps = {
   brand: ProductBrand | "all";
   category?: ProductCategory;
   categorySlug?: string;
+  searchQuery?: string;
   onAdd: (productId: string, quantity?: number) => Promise<void>;
   cart?: CartLine[];
   navigate: (path: RoutePath) => void;
@@ -58,6 +63,7 @@ export default function ProductsPage({
   brand,
   category,
   categorySlug,
+  searchQuery = "",
   onAdd,
   cart = [],
   navigate,
@@ -73,6 +79,8 @@ export default function ProductsPage({
   const [loading, setLoading] = useState(true);
 
   const [error, setError] = useState<string | null>(null);
+  const [serverIssue, setServerIssue] = useState(false);
+  const [retryCount, setRetryCount] = useState(0);
 
   // ==========================================
   // FILTER STATE
@@ -92,6 +100,7 @@ export default function ProductsPage({
       try {
         setLoading(true);
         setError(null);
+        setServerIssue(false);
 
         const [data, categoryData, brandData] = await Promise.all([
           allProducts(),
@@ -135,13 +144,14 @@ export default function ProductsPage({
         console.error("Error fetching products:", error);
 
         setError(apiErrorMessage(error, "Unable to load products."));
+        setServerIssue(isServerUnavailableError(error));
       } finally {
         setLoading(false);
       }
     };
 
     fetchProducts();
-  }, [category, categorySlug]);
+  }, [category, categorySlug, retryCount]);
 
   // ==========================================
   // AVAILABLE BRANDS
@@ -200,7 +210,20 @@ export default function ProductsPage({
 
     const categoryMatch = productMatchesCategory(product, selectedCategory, categories);
 
-    return brandMatch && categoryMatch;
+    const normalizedQuery = searchQuery.toLowerCase();
+    const searchMatch =
+      !normalizedQuery ||
+      [
+        product.name,
+        product.sku,
+        product.brand,
+        product.brandName,
+        product.category,
+        product.categoryName,
+        product.description,
+      ].some((value) => String(value ?? "").toLowerCase().includes(normalizedQuery));
+
+    return brandMatch && categoryMatch && searchMatch;
   });
   const { visibleCount, hasMore, loadMore } = useInfiniteScroll(shownProducts.length, 12, `${selectedCategory ?? "all"}|${selectedBrands.join(",")}`);
   const visibleProducts = shownProducts.slice(0, visibleCount);
@@ -254,7 +277,9 @@ export default function ProductsPage({
   // TITLE
   // ==========================================
 
-  const titleBrand = selectedCategory
+  const titleBrand = searchQuery
+    ? `Search results for "${searchQuery}".`
+    : selectedCategory
     ? `Browse ${selectedCategory.toLowerCase()} products.`
     : selectedBrands.length === availableBrands.length
       ? "Explore home backup power."
@@ -288,15 +313,29 @@ export default function ProductsPage({
 
   const pageHeading = (
     <PageHeading
-      eyebrow={selectedCategory ? `${selectedCategory} CATEGORY` : "BRANDS & PRODUCTS"}
+      eyebrow={
+        searchQuery
+          ? "PRODUCT SEARCH"
+          : selectedCategory
+            ? `${selectedCategory} CATEGORY`
+            : "BRANDS & PRODUCTS"
+      }
       title={
-        <>
-          {titleBrand.split(" ").slice(0, -2).join(" ")}{" "}
-          <em>{titleBrand.split(" ").slice(-2).join(" ")}</em>
-        </>
+        searchQuery ? (
+          <>
+            Search results for <em>{`"${searchQuery}"`}</em>
+          </>
+        ) : (
+          <>
+            {titleBrand.split(" ").slice(0, -2).join(" ")}{" "}
+            <em>{titleBrand.split(" ").slice(-2).join(" ")}</em>
+          </>
+        )
       }
       description={
-        selectedCategory
+        searchQuery
+          ? `Products matching "${searchQuery}". Search by product name, brand, category, or SKU.`
+          : selectedCategory
           ? `Browse ${selectedCategory.toLowerCase()} products from ${brandName}. Add your selection to the bag and our team will confirm availability and pricing.`
           : `Browse ${brandName} inverters and backup batteries. Exact model availability, compatible batteries, and pricing are confirmed with our team.`
       }
@@ -325,12 +364,25 @@ export default function ProductsPage({
   if (error) {
     return (
       <section className="gs-page gs-container">
-        {pageHeading}
-        <div className="gs-home-empty-state gs-catalog-unavailable">
-          <span className="gs-home-empty-icon"><IconBolt size={25} /></span>
-          <strong>{categorySlug ? "Service Not Available" : "Product Not Available"}</strong>
-          <p>{error}</p>
-        </div>
+        {serverIssue ? (
+          <ServerIssueState
+            message={error}
+            onRetry={() => setRetryCount((count) => count + 1)}
+          />
+        ) : (
+          <>
+            {pageHeading}
+            <div className="gs-home-empty-state gs-catalog-unavailable">
+              <span className="gs-home-empty-icon">
+                <IconBolt size={25} />
+              </span>
+              <strong>
+                {categorySlug ? "Service Not Available" : "Product Not Available"}
+              </strong>
+              <p>{error}</p>
+            </div>
+          </>
+        )}
       </section>
     );
   }

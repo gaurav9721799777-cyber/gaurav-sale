@@ -1,46 +1,45 @@
-# Getting Started with Create React App
+# Gaurav Sales
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+Gaurav Sales is a Next.js storefront and admin application with a MongoDB-backed API. It includes product browsing and search, a cart and checkout, product and category management, order tracking, and admin tools.
 
-## Available Scripts
+## Local development
 
-In the project directory, you can run:
+1. Install dependencies with `npm install`.
+2. Copy `.env.example` to `.env.local` and set `ADMIN_SESSION_SECRET` and `ADMIN_BOOTSTRAP_TOKEN` to different random values of at least 32 characters.
+3. Start a local MongoDB server, or set `MONGODB_URI` to a MongoDB Atlas connection string. By default, local development uses the `gaurav-sales-dev` database.
+4. Run `npm run dev` and open [http://localhost:3000](http://localhost:3000).
 
-### `npm start`
+`MONGODB_URI` accepts both local `mongodb://` and Atlas `mongodb+srv://` connection strings. `APP_ENV` selects the default database: `local` and `dev` use `gaurav-sales-dev`, while `production` uses `gaurav-sales-prod`. Set `MONGODB_DATABASE` when you need a separate database name. Server-side credentials belong in `.env.local` or the deployment provider's environment settings, never in `NEXT_PUBLIC_*` variables.
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+## Vercel deployment
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
+Import the repository into Vercel and add these server-only environment variables to the appropriate Vercel environments:
 
-### `npm test`
+- `APP_ENV=production`
+- `MONGODB_URI` with the production MongoDB Atlas connection string
+- `ADMIN_SESSION_SECRET` and `ADMIN_BOOTSTRAP_TOKEN`, each a different random value of at least 32 characters
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+Connect a Vercel Blob store to the project to enable persistent product image uploads. Vercel provides `BLOB_READ_WRITE_TOKEN` to the deployment. Local development stores uploaded images in `public/uploads/products`; Vercel stores them in Blob so uploads survive serverless deployments.
 
-### `npm run build`
+The application uses same-origin `/api` routes by default, so a separate `NEXT_PUBLIC_API_URL` is not required. Vercel builds with `npm run build`; run the same command locally to check a production build. After deployment, checkout geolocation requires HTTPS.
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+## Initial admin setup
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+Create the first administrator by sending a `POST` request to `/api/auth/bootstrap` with JSON:
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+```json
+{
+  "username": "your-admin-name",
+  "password": "a-long-unique-password",
+  "token": "your-bootstrap-token"
+}
+```
 
-### `npm run eject`
+The endpoint is available only until the first administrator is created. Admin sign-in uses `/api/auth/admin`; passwords are stored as salted scrypt hashes, and admin sessions use signed, HTTP-only cookies.
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+## Commands
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
-
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
+- `npm run dev`: start the local development server
+- `npm run build`: create the optimized production build
+- `npm start`: serve the production build locally
+- `npm test`: run the test suite

@@ -27,6 +27,7 @@ export type RoutePath =
   | "/"
   | "/login"
   | "/products"
+  | `/products?search=${string}`
   | "/product"
   | "/products/microtek"
   | "/products/luminous"
@@ -50,6 +51,7 @@ export type RoutePath =
 
 type AppRoutesProps = {
   path: string;
+  searchQuery: string;
   navigate: (path: RoutePath) => void;
   cart: CartLine[];
   cartId: string;
@@ -61,6 +63,7 @@ type AppRoutesProps = {
   cartBusy: boolean;
   cartMessage: string;
   adminAuthenticated: boolean;
+  adminAuthLoading: boolean;
   onAdminLogin: () => void;
   onAdminLogout: () => void;
 };
@@ -83,6 +86,7 @@ const LoadingPage = () => {
 
 const AppRouteContent = ({
   path,
+  searchQuery,
   cart,
   cartId,
   onAdd,
@@ -93,6 +97,7 @@ const AppRouteContent = ({
   cartBusy,
   cartMessage,
   adminAuthenticated,
+  adminAuthLoading,
   onAdminLogin,
   onAdminLogout,
   navigate,
@@ -112,6 +117,7 @@ const AppRouteContent = ({
           element={
             <ProductsPage
               brand="all"
+              searchQuery={searchQuery}
               onAdd={onAdd}
               cart={cart}
               navigate={navigate}
@@ -123,6 +129,7 @@ const AppRouteContent = ({
           element={
             <ProductsPage
               brand="all"
+              searchQuery={searchQuery}
               onAdd={onAdd}
               cart={cart}
               navigate={navigate}
@@ -134,6 +141,7 @@ const AppRouteContent = ({
           element={
             <ProductsPage
               brand="microtek"
+              searchQuery={searchQuery}
               onAdd={onAdd}
               cart={cart}
               navigate={navigate}
@@ -145,6 +153,7 @@ const AppRouteContent = ({
           element={
             <ProductsPage
               brand="luminous"
+              searchQuery={searchQuery}
               onAdd={onAdd}
               cart={cart}
               navigate={navigate}
@@ -157,6 +166,7 @@ const AppRouteContent = ({
             <ProductsPage
               brand="all"
               category="Inverter"
+              searchQuery={searchQuery}
               onAdd={onAdd}
               cart={cart}
               navigate={navigate}
@@ -170,6 +180,7 @@ const AppRouteContent = ({
             <ProductsPage
               brand="all"
               category="Battery"
+              searchQuery={searchQuery}
               onAdd={onAdd}
               cart={cart}
               navigate={navigate}
@@ -184,6 +195,7 @@ const AppRouteContent = ({
               onAdd={onAdd}
               cart={cart}
               navigate={navigate}
+              searchQuery={searchQuery}
             />
           }
         />
@@ -209,7 +221,9 @@ const AppRouteContent = ({
         <Route
           path="/admin/login"
           element={
-            adminAuthenticated ? (
+            adminAuthLoading ? (
+              <LoadingPage />
+            ) : adminAuthenticated ? (
               <Navigate to="/admin/dashboard" replace />
             ) : (
               <AdminLogin onLogin={onAdminLogin} />
@@ -219,7 +233,9 @@ const AppRouteContent = ({
         <Route
           path="/admin/*"
           element={
-            adminAuthenticated ? (
+            adminAuthLoading ? (
+              <LoadingPage />
+            ) : adminAuthenticated ? (
               <AdminPanel
                 routePath={path}
                 navigate={navigate}
@@ -266,12 +282,14 @@ const CategoryProductsRoute = ({
   onAdd,
   cart,
   navigate,
-}: Pick<AppRoutesProps, "onAdd" | "cart" | "navigate">) => {
+  searchQuery,
+}: Pick<AppRoutesProps, "onAdd" | "cart" | "navigate" | "searchQuery">) => {
   const { categorySlug } = useParams<{ categorySlug: string }>();
   return (
     <ProductsPage
       brand="all"
       categorySlug={categorySlug}
+      searchQuery={searchQuery}
       onAdd={onAdd}
       cart={cart}
       navigate={navigate}

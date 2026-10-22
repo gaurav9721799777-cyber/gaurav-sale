@@ -37,24 +37,32 @@ const containsConnectionFailure = (value: unknown, seen = new Set<object>()): bo
   return Object.values(value).some((nested) => containsConnectionFailure(nested, seen));
 };
 
-export const apiErrorMessage = (error: unknown, fallback: string): string => {
+export const isServerUnavailableError = (error: unknown): boolean => {
   if (axios.isAxiosError(error)) {
-    const serverMessage = messageFrom(error.response?.data);
-    if (
+    return (
+      (error.response?.status !== undefined && error.response.status >= 500) ||
       isConnectionFailureMessage(error.message) ||
       isConnectionFailureMessage(error.code) ||
       containsConnectionFailure(error.response?.data) ||
       error.code === "ECONNABORTED" ||
       !error.response
-    ) {
+    );
+  }
+  if (error instanceof Error && isConnectionFailureMessage(error.message)) {
+    return true;
+  }
+  return containsConnectionFailure(error);
+};
+
+export const apiErrorMessage = (error: unknown, fallback: string): string => {
+  if (axios.isAxiosError(error)) {
+    const serverMessage = messageFrom(error.response?.data);
+    if (isServerUnavailableError(error)) {
       return serverConnectionMessage;
     }
     if (serverMessage) return serverMessage;
   }
-  if (error instanceof Error && isConnectionFailureMessage(error.message)) {
-    return serverConnectionMessage;
-  }
-  if (containsConnectionFailure(error)) return serverConnectionMessage;
+  if (isServerUnavailableError(error)) return serverConnectionMessage;
   const message = messageFrom(error);
   return message ?? fallback;
 };

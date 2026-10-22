@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { IconArrowRight, IconBolt, IconShoppingBag, IconLoader2, IconPlus, IconMinus } from "@tabler/icons-react";
 import type { Product } from "../data/products";
 import { apiErrorMessage } from "../services/apiError";
+import { animateProductToCart } from "../utils/cartAnimation";
 
 type ProductCardProps = {
   product: Product;
@@ -52,11 +53,13 @@ export default function ProductCard({
   }, [availableToAdd]);
   const addSelectedQuantity = async (event: React.MouseEvent<HTMLButtonElement>) => {
     event.stopPropagation();
+    const source = event.currentTarget;
     setAddError("");
     setAdded(false);
     setAdding(true);
     try {
       await onAdd(product.id, quantity);
+      animateProductToCart(source);
       setAdded(true);
     } catch (error) {
       setAddError(apiErrorMessage(error, "Could not add this item. Please try again."));

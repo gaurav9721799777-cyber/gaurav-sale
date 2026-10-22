@@ -43,12 +43,9 @@ export const getCart = async (cartId: string): Promise<CartRecord> => {
   return body && typeof body === "object" ? body as CartRecord : {};
 };
 
-const toBackendProductId = (productId: string): number => {
-  const id = Number(productId);
-  if (!Number.isSafeInteger(id) || id <= 0) {
-    throw new Error("This product has an invalid ID and cannot be added to the cart.");
-  }
-  return id;
+const toBackendProductId = (productId: string): string => {
+  if (!productId.trim()) throw new Error("This product has an invalid ID and cannot be added to the cart.");
+  return productId;
 };
 
 export const addCartItem = async (cartId: string, productId: string, quantity = 1): Promise<void> => {
