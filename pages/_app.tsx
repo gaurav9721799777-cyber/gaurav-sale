@@ -1,4 +1,5 @@
 import dynamic from "next/dynamic";
+import Head from "next/head";
 import { MantineProvider, createTheme } from "@mantine/core";
 import "@mantine/core/styles.css";
 import "../src/App.css";
@@ -33,6 +34,18 @@ const theme = createTheme({
 export default function NextApp() {
   return (
     <MantineProvider theme={theme}>
+      <Head>
+        <title>Gaurav Sales | Inverters &amp; Solar Power</title>
+        <meta
+          name="description"
+          content="Shop reliable solar and hybrid inverters with Gaurav Sales. Find a smarter way to power your home."
+        />
+        <meta name="theme-color" content="#3158b8" />
+        <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+        <link rel="alternate icon" href="/favicon.ico" />
+        <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+        <link rel="manifest" href="/manifest.json" />
+      </Head>
       <LegacyApp />
     </MantineProvider>
   );
