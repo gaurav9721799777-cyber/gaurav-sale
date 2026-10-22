@@ -21,6 +21,7 @@ import { useInfiniteScroll } from "../hooks/useInfiniteScroll";
 
 
 import {
+  addCatalogNamesToProducts,
   allProducts,
   productIsInActiveCatalog,
   resolveProductImageUrl,
@@ -110,20 +111,44 @@ export default function ProductsPage({
         const activeBrands = brandData.filter((item) => item.active !== false);
         const activeCategories = categoryData.filter((item) => item.active !== false);
         setBrands(activeBrands);
-        const productsWithApiBrands = data.filter((product) => product.active !== false && productIsInActiveCatalog(product, categoryData, brandData)).map((product) => {
-          const normalizeBrand = (value: string | undefined) =>
-            String(value || "").toLowerCase().trim().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
-          const productBrandName = normalizeBrand(product.brandName);
-          const productBrandSlug = normalizeBrand(product.brand);
-          const apiBrand = activeBrands.find((item) => String(item.id) === String(product.brandId)) ||
-            activeBrands.find((item) => [item.name, item.slug].some((value) => {
-              const normalized = normalizeBrand(value);
-              return normalized && (normalized === productBrandName || normalized === productBrandSlug);
-            }));
-          return apiBrand
-            ? { ...product, brand: brandKey(apiBrand), brandName: apiBrand.name }
-            : product;
-        });
+        const namedProducts = addCatalogNamesToProducts(
+          data,
+          categoryData,
+          brandData,
+        );
+        const productsWithApiBrands = namedProducts
+          .filter(
+            (product) =>
+              product.active !== false &&
+              productIsInActiveCatalog(product, categoryData, brandData),
+          )
+          .map((product) => {
+            const normalizeBrand = (value: string | undefined) =>
+              String(value || "")
+                .toLowerCase()
+                .trim()
+                .replace(/[^a-z0-9]+/g, "-")
+                .replace(/^-|-$/g, "");
+            const productBrandName = normalizeBrand(product.brandName);
+            const productBrandSlug = normalizeBrand(product.brand);
+            const apiBrand =
+              activeBrands.find(
+                (item) => String(item.id) === String(product.brandId),
+              ) ||
+              activeBrands.find((item) =>
+                [item.name, item.slug].some((value) => {
+                  const normalized = normalizeBrand(value);
+                  return (
+                    normalized &&
+                    (normalized === productBrandName ||
+                      normalized === productBrandSlug)
+                  );
+                }),
+              );
+            return apiBrand
+              ? { ...product, brand: brandKey(apiBrand), brandName: apiBrand.name }
+              : product;
+          });
         setProducts(productsWithApiBrands);
         const resolvedCategories = activeCategories;
         if (categorySlug) {

@@ -13,10 +13,13 @@ import {
 import PageHeading from "../components/PageHeading";
 import AppLoader from "../components/AppLoader";
 import {
+  addCatalogNamesToProducts,
   allProducts,
   resolveProductImageUrl,
   type Product,
 } from "../services/ProductService";
+import { getBrands } from "../services/BrandService";
+import { getCategories } from "../services/CategoryServiceService";
 import type { CartLine } from "../services/CartService";
 import type { RoutePath } from "../Route/NextAppRoutes";
 import type { FormEvent } from "react";
@@ -274,9 +277,14 @@ export default function OrderPage({
   const [catalogLoading, setCatalogLoading] = useState(true);
   useEffect(() => {
     let active = true;
-    allProducts()
-      .then((items) => {
-        if (active) setCatalog(items);
+    Promise.all([
+      allProducts(),
+      getCategories().catch(() => []),
+      getBrands().catch(() => []),
+    ])
+      .then(([items, categories, brands]) => {
+        if (active)
+          setCatalog(addCatalogNamesToProducts(items, categories, brands));
       })
       .catch(() => {
         if (active) setCatalog([]);

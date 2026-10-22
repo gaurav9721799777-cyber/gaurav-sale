@@ -5,6 +5,7 @@ import { vi } from "vitest";
 import ProductsPage from "./ProductsPage";
 
 vi.mock("../services/ProductService", () => ({
+  addCatalogNamesToProducts: vi.fn((products: unknown[]) => products),
   allProducts: vi.fn(async () => [
     {
       id: "microtek-inverter",

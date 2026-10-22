@@ -95,6 +95,27 @@ export const productIsInActiveCatalog = (
       brand.active === false && belongsToEntity(product, brand, "brand"),
   );
 
+export const addCatalogNamesToProducts = (
+  products: Product[],
+  categories: Category[],
+  brands: Brand[],
+): Product[] =>
+  products.map((product) => {
+    const category = categories.find(
+      (item) => String(item.id) === String(product.categoryId),
+    );
+    const brand = brands.find(
+      (item) => String(item.id) === String(product.brandId),
+    );
+    return {
+      ...product,
+      category: category?.name || product.categoryName || product.category,
+      categoryName: category?.name || product.categoryName || product.category,
+      brand: brand ? brandKey(brand) : product.brand,
+      brandName: brand?.name || product.brandName || product.brand,
+    };
+  });
+
 export type ProductWriteRequest = {
   name: string;
   slug: string;

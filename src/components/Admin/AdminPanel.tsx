@@ -520,8 +520,12 @@ function AdminPanel({
     setProductError("");
     try {
       await deleteProductRequest(id);
-      setProducts((current) => current.filter((product) => product.id !== id));
-      setNotice("Product deleted.");
+      setProducts((current) =>
+        current.map((product) =>
+          product.id === id ? { ...product, active: false } : product,
+        ),
+      );
+      setNotice("Product marked as inactive.");
     } catch (error) {
       setProductError(apiErrorMessage(error, "Could not delete this product."));
     }

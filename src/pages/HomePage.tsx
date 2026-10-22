@@ -29,6 +29,7 @@ import {
 } from "../services/apiError";
 import type { CartLine } from "../services/CartService";
 import {
+  addCatalogNamesToProducts,
   allProducts,
   productIsInActiveCatalog,
   resolveProductImageUrl,
@@ -126,25 +127,30 @@ export default function HomePage({ navigate, onAdd, cart }: HomePageProps) {
     ])
     .then(([items, productCategories, brands]) => {
       if (!active) return;
-      const activeProducts = items.filter(
-          (product) =>
-            product.active !== false &&
-            productIsInActiveCatalog(product, productCategories, brands),
-        );
-        setFeaturedProducts(activeProducts.slice(0, 4));
-      })
-      .catch((error: unknown) => {
-        if (!active) return;
-        console.error("Could not load featured products.", error);
-        setFeaturedProducts([]);
-        setProductsError(
-          apiErrorMessage(error, "Products could not be loaded right now."),
-        );
-        setProductsServerIssue(isServerUnavailableError(error));
-      })
-      .finally(() => {
-        if (active) setProductsLoading(false);
-      });
+      const namedProducts = addCatalogNamesToProducts(
+        items,
+        productCategories,
+        brands,
+      );
+      const activeProducts = namedProducts.filter(
+        (product) =>
+          product.active !== false &&
+          productIsInActiveCatalog(product, productCategories, brands),
+      );
+      setFeaturedProducts(activeProducts.slice(0, 4));
+    })
+    .catch((error: unknown) => {
+      if (!active) return;
+      console.error("Could not load featured products.", error);
+      setFeaturedProducts([]);
+      setProductsError(
+        apiErrorMessage(error, "Products could not be loaded right now."),
+      );
+      setProductsServerIssue(isServerUnavailableError(error));
+    })
+    .finally(() => {
+      if (active) setProductsLoading(false);
+    });
     return () => {
       active = false;
     };
