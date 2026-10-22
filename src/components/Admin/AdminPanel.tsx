@@ -79,6 +79,7 @@ import AppLoader from "../AppLoader";
 import InfiniteScrollTrigger from "../InfiniteScrollTrigger";
 import { useInfiniteScroll } from "../../hooks/useInfiniteScroll";
 import { apiErrorMessage } from "../../services/apiError";
+import type { RoutePath } from "../../Route/NextAppRoutes";
 
 type Section =
   | "Dashboard"
@@ -192,7 +193,7 @@ function AdminPanel({
   onLogout,
 }: {
   routePath: string;
-  navigate: (path: import("../../Route/AppRoutes").RoutePath) => void;
+  navigate: (path: RoutePath) => void;
   onLogout: () => void;
 }) {
   const [currentDateTime, setCurrentDateTime] = useState(() => new Date());
@@ -533,7 +534,7 @@ function AdminPanel({
     setEntitySearch("");
     setEntityFilter("all");
     setNotice("");
-    const route: Record<Section, import("../../Route/AppRoutes").RoutePath> = {
+    const route: Record<Section, RoutePath> = {
       Dashboard: "/admin/dashboard",
       Products: "/admin/products",
       Categories: "/admin/categories",

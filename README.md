@@ -13,7 +13,7 @@ Gaurav Sales is a Next.js storefront and admin application with a MongoDB-backed
 
 ## Vercel deployment
 
-Import the repository into Vercel and add these server-only environment variables to the appropriate Vercel environments:
+Import the repository into Vercel with the **Next.js** framework preset and add these server-only environment variables to the appropriate Vercel environments. Keep Vercel's default Next.js output settings; do not set the output directory to `build` (that is not the Next.js production output).
 
 - `APP_ENV=production`
 - `MONGODB_URI` with the production MongoDB Atlas connection string

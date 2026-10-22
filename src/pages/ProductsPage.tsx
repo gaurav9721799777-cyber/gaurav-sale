@@ -14,7 +14,7 @@ import {
   type ProductCategory,
 } from "../data/products";
 
-import type { RoutePath } from "../Route/AppRoutes";
+import type { RoutePath } from "../Route/NextAppRoutes";
 import type { CartLine } from "../services/CartService";
 import InfiniteScrollTrigger from "../components/InfiniteScrollTrigger";
 import { useInfiniteScroll } from "../hooks/useInfiniteScroll";

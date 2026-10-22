@@ -2,7 +2,7 @@ import React from "react";
 import { Button } from "@mantine/core";
 import { IconArrowRight, IconCash, IconCheck, IconShieldCheck } from "@tabler/icons-react";
 import PageHeading from "../components/PageHeading";
-import type { RoutePath } from "../Route/AppRoutes";
+import type { RoutePath } from "../Route/NextAppRoutes";
 import paymentPageHero from "../assets/payment-page-hero.jpg";
 
 type PaymentPageProps = { navigate: (path: RoutePath) => void };

@@ -1,5 +1,5 @@
 import React, { FormEvent, useState } from "react";
-import { Link } from "react-router-dom";
+import Link from "next/link";
 import {
   IconArrowRight,
   IconEye,
@@ -71,7 +71,7 @@ export default function AdminLogin({ onLogin }: { onLogin: () => void }) {
       </section>
 
       <section className="admin-login-form-panel">
-        <Link className="admin-login-home" to="/" aria-label="Go to home page">
+        <Link className="admin-login-home" href="/" aria-label="Go to home page">
           <IconHome size={17} />
           <span>Home</span>
         </Link>

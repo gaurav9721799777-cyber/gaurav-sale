@@ -1,4 +1,4 @@
-import dynamic from "next/dynamic";
+import type { AppProps } from "next/app";
 import Head from "next/head";
 import { MantineProvider, createTheme } from "@mantine/core";
 import "@mantine/core/styles.css";
@@ -9,8 +9,6 @@ import "../src/components/Admin/AdminPanel.css";
 import "../src/components/AppLoader.css";
 import "../src/components/storefront.css";
 import "../src/index.css";
-
-const LegacyApp = dynamic(() => import("../src/App"), { ssr: false });
 
 const theme = createTheme({
   primaryColor: "brand",
@@ -31,7 +29,7 @@ const theme = createTheme({
   defaultRadius: "xs",
 });
 
-export default function NextApp() {
+export default function NextApp({ Component, pageProps }: AppProps) {
   return (
     <MantineProvider theme={theme}>
       <Head>
@@ -42,11 +40,10 @@ export default function NextApp() {
         />
         <meta name="theme-color" content="#3158b8" />
         <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-        <link rel="alternate icon" href="/favicon.ico" />
         <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
         <link rel="manifest" href="/manifest.json" />
       </Head>
-      <LegacyApp />
+      <Component {...pageProps} />
     </MantineProvider>
   );
 }

@@ -1,6 +1,5 @@
-import React, { useEffect, useState } from "react";
-
-import { BrowserRouter, useLocation, useNavigate } from "react-router-dom";
+import React, { useCallback, useEffect, useState } from "react";
+import { useRouter } from "next/router";
 
 import {
   IconArrowRight,
@@ -21,7 +20,7 @@ import {
 import brandLogo from "./assets/gs-logo.png";
 import { assetSource } from "./utils/assetSource";
 
-import AppRoutes, { type RoutePath } from "./Route/AppRoutes";
+import AppRoutes, { type RoutePath } from "./Route/NextAppRoutes";
 
 import {
   addCartItem,
@@ -73,27 +72,33 @@ const navigation: {
 ];
 
 function AppContent() {
-  const navigate = useNavigate();
-
-  const location = useLocation();
-
-  const path = location.pathname as RoutePath;
+  const router = useRouter();
+  const pathWithQuery = router.asPath.split("#")[0];
+  const path = pathWithQuery.split("?")[0] as RoutePath;
+  const searchQuery = new URLSearchParams(
+    pathWithQuery.split("?")[1] ?? "",
+  ).get("search") ?? "";
 
   // ==========================================
   // CART
   // ==========================================
 
-  const [cartId] = useState(() => {
+  const [cartId, setCartId] = useState("");
+
+  useEffect(() => {
     const storageKey = "gaurav-sales-cart-id";
     const existing = window.localStorage.getItem(storageKey);
-    if (existing) return existing;
+    if (existing) {
+      setCartId(existing);
+      return;
+    }
     const nextId =
       typeof window.crypto?.randomUUID === "function"
         ? window.crypto.randomUUID()
         : `cart-${Date.now()}-${Math.random().toString(36).slice(2)}`;
     window.localStorage.setItem(storageKey, nextId);
-    return nextId;
-  });
+    setCartId(nextId);
+  }, []);
   const [cart, setCart] = useState<CartLine[]>([]);
   const [cartBusy, setCartBusy] = useState(true);
   const [cartMessage, setCartMessage] = useState("");
@@ -103,6 +108,7 @@ function AppContent() {
   const [productCategories, setProductCategories] = useState<Category[]>([]);
 
   useEffect(() => {
+    if (!cartId) return;
     let active = true;
     getCart(cartId)
       .then((record) => {
@@ -163,13 +169,11 @@ function AppContent() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   const [productsMenuOpen, setProductsMenuOpen] = useState(false);
-  const [productSearch, setProductSearch] = useState(
-    () => new URLSearchParams(location.search).get("search") ?? "",
-  );
+  const [productSearch, setProductSearch] = useState(searchQuery);
 
   useEffect(() => {
-    setProductSearch(new URLSearchParams(location.search).get("search") ?? "");
-  }, [location.search]);
+    setProductSearch(searchQuery);
+  }, [searchQuery]);
 
   // ==========================================
   // ADD TO CART
@@ -179,6 +183,9 @@ function AppContent() {
     action: () => Promise<void>,
     successMessage: string,
   ): Promise<void> => {
+    if (!cartId) {
+      throw new Error("Your bag is still loading. Please try again.");
+    }
     setCartBusy(true);
     setCartMessage("");
     try {
@@ -231,18 +238,21 @@ function AppContent() {
   // NAVIGATION
   // ==========================================
 
-  const go = (next: RoutePath) => {
-    navigate(next);
+  const go = useCallback(
+    (next: RoutePath) => {
+      void router.push(next);
 
-    setMobileMenuOpen(false);
+      setMobileMenuOpen(false);
 
-    setProductsMenuOpen(false);
+      setProductsMenuOpen(false);
 
-    window.scrollTo({
-      top: 0,
-      behavior: "smooth",
-    });
-  };
+      window.scrollTo({
+        top: 0,
+        behavior: "smooth",
+      });
+    },
+    [router],
+  );
 
   // ==========================================
   // CART COUNT
@@ -543,7 +553,7 @@ function AppContent() {
       <main>
         <AppRoutes
           path={path}
-          searchQuery={new URLSearchParams(location.search).get("search") ?? ""}
+            searchQuery={searchQuery}
           navigate={go}
           cart={cart}
           cartId={cartId}
@@ -740,11 +750,7 @@ function AppContent() {
 // ============================================
 
 function App() {
-  return (
-    <BrowserRouter>
-      <AppContent />
-    </BrowserRouter>
-  );
+  return <AppContent />;
 }
 
 export default App;

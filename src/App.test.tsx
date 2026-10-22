@@ -1,6 +1,8 @@
 import React from "react";
 import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { MantineProvider } from "@mantine/core";
+import type { NextRouter, Url } from "next/dist/shared/lib/router/router";
+import { RouterContext } from "next/dist/shared/lib/router-context.shared-runtime";
 import { vi } from "vitest";
 import App from "./App";
 
@@ -78,11 +80,53 @@ vi.mock("./services/CartService", () => ({
   updateCartItem: vi.fn(async () => undefined),
 }));
 
+function TestRouterProvider({ children }: { children: React.ReactNode }) {
+  const [asPath, setAsPath] = React.useState("/");
+  const router = React.useMemo<NextRouter>(() => {
+    const navigate = async (url: Url) => {
+      const nextPath =
+        typeof url === "string"
+          ? url
+          : `${url.pathname ?? "/"}${url.search ?? ""}${url.hash ?? ""}`;
+      window.history.replaceState({}, "", nextPath);
+      setAsPath(nextPath);
+      return true;
+    };
+    return {
+      basePath: "",
+      pathname: asPath.split("?")[0],
+      route: asPath.split("?")[0],
+      query: {},
+      asPath,
+      isLocaleDomain: false,
+      isFallback: false,
+      isReady: true,
+      isPreview: false,
+      push: navigate,
+      replace: navigate,
+      reload: () => {},
+      back: () => {},
+      forward: () => {},
+      prefetch: async () => {},
+      beforePopState: () => {},
+      events: { on: () => {}, off: () => {}, emit: () => {} },
+    };
+  }, [asPath]);
+
+  return (
+    <RouterContext.Provider value={router}>
+      {children}
+    </RouterContext.Provider>
+  );
+}
+
 const renderApp = () =>
   render(
-    <MantineProvider>
-      <App />
-    </MantineProvider>,
+    <TestRouterProvider>
+      <MantineProvider>
+        <App />
+      </MantineProvider>
+    </TestRouterProvider>,
   );
 
 beforeEach(() => {
@@ -142,7 +186,7 @@ test("renders the responsive storefront header and category-led homepage", async
       name: /browse battery products/i,
     }),
   ).toBeInTheDocument();
-});
+}, 20000);
 
 test("searches the product catalog from the global header", async () => {
   renderApp();

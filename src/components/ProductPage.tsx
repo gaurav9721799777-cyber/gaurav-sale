@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
 import { IconArrowRight, IconShoppingBag } from "@tabler/icons-react";
 import {
   productsApi,
@@ -30,8 +29,7 @@ function ProductPage({
   slug?: string;
   onAdd: (productId: string) => Promise<void> | void;
 }) {
-  const params = useParams<{ slug: string }>();
-  const slug = providedSlug || params.slug || "";
+  const slug = providedSlug || "";
   const [product, setProduct] = useState<Product | null>(null);
   const [imageFailed, setImageFailed] = useState(false);
   const [loading, setLoading] = useState(true);

@@ -1,0 +1,18 @@
+{
+  "planHash": "59547e95ba85774a579f1009581d59a4e8bf20a054b7ba41f63379007675a943",
+  "phase": "standalone",
+  "recordedAtUtc": "2026-10-22T12:00:02.3825720Z",
+  "retryCount": 1,
+  "resetBaseline": false,
+  "complete": false,
+  "runningStep": "production-build",
+  "partialOutput": "npm warn Unknown env config \u0022scripts-prepend-node-path\u0022. This will stop working in the next major version of npm.\r\n\r\n\u003E gaurav-sales@0.1.0 build\r\n\u003E next build\r\n\r\n\u25B2 Next.js 16.4.2 (Turbopack)\r\n- Environments: .env.local\r\n\u2713 Running next.config.js took 258ms\r\n\r\n  Running TypeScript ...\r\n  Finished TypeScript in 79s ...\r\n  Creating an optimized production build ...\r\n",
+  "cleanupCompleted": true,
+  "result": {
+    "setupSucceeded": false,
+    "setupDurationMs": 0,
+    "setupFailureOutput": null,
+    "assertions": [],
+    "executions": []
+  }
+}

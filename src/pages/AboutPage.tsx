@@ -7,7 +7,7 @@ import {
   IconShieldCheck,
 } from "@tabler/icons-react";
 import PageHeading from "../components/PageHeading";
-import type { RoutePath } from "../Route/AppRoutes";
+import type { RoutePath } from "../Route/NextAppRoutes";
 import premiumBrandsBanner from "../assets/premium-brands-home-banner.png";
 import aboutPageHero from "../assets/about-page-hero.jpg";
 import founderPortrait from "../assets/amit-rai-about.png";

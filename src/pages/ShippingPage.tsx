@@ -2,7 +2,7 @@ import React from "react";
 import { Button } from "@mantine/core";
 import { IconArrowRight, IconMapPin, IconPackage, IconTruck } from "@tabler/icons-react";
 import PageHeading from "../components/PageHeading";
-import type { RoutePath } from "../Route/AppRoutes";
+import type { RoutePath } from "../Route/NextAppRoutes";
 import shippingPageHero from "../assets/shipping-page-hero.jpg";
 
 type ShippingPageProps = { navigate: (path: RoutePath) => void };

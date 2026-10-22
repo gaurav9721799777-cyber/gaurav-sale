@@ -17,7 +17,7 @@ import {
   products as fallbackProducts,
   type Product as CatalogProduct,
 } from "../data/products";
-import type { RoutePath } from "../Route/AppRoutes";
+import type { RoutePath } from "../Route/NextAppRoutes";
 import {
   getCategories,
   type Category,

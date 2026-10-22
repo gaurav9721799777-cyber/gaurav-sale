@@ -18,7 +18,7 @@ import {
   type Product,
 } from "../services/ProductService";
 import type { CartLine } from "../services/CartService";
-import type { RoutePath } from "../Route/AppRoutes";
+import type { RoutePath } from "../Route/NextAppRoutes";
 import type { FormEvent } from "react";
 import {
   getOrderById,
