@@ -7,8 +7,9 @@ import type { NextApiRequest, NextApiResponse } from "next";
 import { Types } from "mongoose";
 import { hasAdminSession, requireAdmin } from "../../src/server/admin-auth";
 import { connectMongo } from "../../src/server/mongodb";
-import { Brand, Cart, Category, Order, Product } from "../../src/server/models";
+import { Brand, Cart, Category, Dealer, Order, Product } from "../../src/server/models";
 import { assertWithinDeliveryZone, DeliveryZoneError } from "../../src/server/delivery-zone";
+import { sendOrderConfirmationEmail } from "../../src/server/order-email";
 
 export const config = { api: { bodyParser: false } };
 
@@ -97,6 +98,9 @@ const toProduct = (row: Row) => {
 const toOrder = (row: Row) => ({
   ...row,
   id: idString(row._id ?? row.id),
+  dealerId: row.dealerId && typeof row.dealerId === "object" && row.dealerId._id
+    ? toDealer(row.dealerId)
+    : row.dealerId,
   fullName: row.customer?.fullName ?? row.fullName,
   phoneNumber: row.customer?.phoneNumber ?? row.phoneNumber,
   email: row.customer?.email ?? row.email ?? "",
@@ -272,7 +276,7 @@ async function handleOrders(request: NextApiRequest, response: NextApiResponse, 
     const rest = segments.slice(2);
     const [action, value, field] = rest;
     if (request.method === "GET" && !action) {
-      const rows = await Order.find().sort({ createdAt: -1 }).lean();
+      const rows = await Order.find().populate("dealerId").sort({ createdAt: -1 }).lean();
       return response.status(200).json(rows.map((row) => toOrder(row as Row)));
     }
     if (request.method === "GET" && action === "status" && value) {
@@ -328,6 +332,9 @@ async function handleOrders(request: NextApiRequest, response: NextApiResponse, 
     if (!body.fullName || !body.phoneNumber || !body.streetAddress || !body.city || !body.postalCode || !body.countryRegion) {
       return response.status(400).json({ success: false, message: "Complete the required delivery details." });
     }
+    if (body.email && (typeof body.email !== "string" || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(body.email.trim()))) {
+      return response.status(400).json({ success: false, message: "Enter a valid email address." });
+    }
     const deliveryLocation = body.deliveryLocation;
     if (!deliveryLocation || typeof deliveryLocation.latitude !== "number" || typeof deliveryLocation.longitude !== "number") {
       return response.status(400).json({ success: false, message: "Confirm your delivery location before placing the order." });
@@ -365,7 +372,22 @@ async function handleOrders(request: NextApiRequest, response: NextApiResponse, 
     }
     cart.items = [];
     await cart.save();
-    return response.status(201).json({ data: toOrder(order.toObject() as Row) });
+    const emailNotification = await sendOrderConfirmationEmail({
+      to: typeof body.email === "string" ? body.email.trim() : "",
+      customerName: String(body.fullName),
+      orderNumber: order.orderNumber,
+      totalAmount,
+      items: items.map((item) => ({
+        name: String(item.name),
+        sku: String(item.sku ?? ""),
+        quantity: Number(item.quantity),
+        unitPrice: Number(item.unitPrice),
+      })),
+    });
+    return response.status(201).json({
+      data: toOrder(order.toObject() as Row),
+      emailNotification,
+    });
   }
 
   if (request.method === "GET" && first) {
@@ -381,6 +403,165 @@ async function handleOrders(request: NextApiRequest, response: NextApiResponse, 
   return response.status(405).json({ success: false, message: "Method not allowed." });
 }
 
+const toDealer = (row: Row) => ({
+  ...row,
+  id: idString(row._id ?? row.id),
+  _id: undefined,
+  __v: undefined,
+});
+
+async function handleDealers(request: NextApiRequest, response: NextApiResponse, segments: string[]) {
+  if (!adminOnly(request, response)) return;
+  if (request.method === "GET" && segments.length === 1) {
+    const dealers = await Dealer.find({ active: { $ne: false } }).sort({ businessName: 1, name: 1 }).lean();
+    return response.status(200).json({ data: dealers.map((dealer) => toDealer(dealer as Row)) });
+  }
+  if (request.method === "POST" && segments.length === 1) {
+    const body = request.body && typeof request.body === "object" ? request.body as Row : {};
+    const name = typeof body.name === "string" ? body.name.trim() : "";
+    const businessName = typeof body.businessName === "string" ? body.businessName.trim() : "";
+    const phoneNumber = typeof body.phoneNumber === "string" ? body.phoneNumber.trim() : "";
+    if (!name || !businessName || phoneNumber.replace(/\D/g, "").length < 7) {
+      return response.status(400).json({ success: false, message: "Enter the dealer name, business name, and a valid phone number." });
+    }
+    const dealer = await Dealer.create({
+      name,
+      businessName,
+      phoneNumber,
+      email: typeof body.email === "string" ? body.email.trim() : "",
+      gstin: typeof body.gstin === "string" ? body.gstin.trim().toUpperCase() : "",
+      address: typeof body.address === "string" ? body.address.trim() : "",
+    });
+    return response.status(201).json({ data: toDealer(dealer.toObject() as Row) });
+  }
+  response.setHeader("Allow", "GET, POST");
+  return response.status(405).json({ success: false, message: "Method not allowed." });
+}
+
+async function handleDealerSales(request: NextApiRequest, response: NextApiResponse, segments: string[]) {
+  if (!adminOnly(request, response)) return;
+  if (request.method === "GET" && segments.length === 1) {
+    const orders = await Order.find({ customerType: "DEALER" }).populate("dealerId").sort({ createdAt: -1 }).lean();
+    return response.status(200).json({ data: orders.map((order) => toOrder(order as Row)) });
+  }
+  if (request.method === "POST" && segments.length === 1) {
+    const body = request.body && typeof request.body === "object" ? request.body as Row : {};
+    const dealerId = typeof body.dealerId === "string" ? body.dealerId : "";
+    if (!isId(dealerId)) return response.status(400).json({ success: false, message: "Choose a valid dealer." });
+    const dealer = await Dealer.findOne({ _id: dealerId, active: { $ne: false } });
+    if (!dealer) return response.status(404).json({ success: false, message: "Dealer not found." });
+    if (!Array.isArray(body.items) || body.items.length === 0) {
+      return response.status(400).json({ success: false, message: "Add at least one product to this sale." });
+    }
+    const requestedItems = body.items as Row[];
+    const seenProducts = new Set<string>();
+    for (const item of requestedItems) {
+      if (!item || typeof item !== "object") {
+        return response.status(400).json({ success: false, message: "Each sale item must include a product, quantity, and dealer price." });
+      }
+      const productId = typeof item.productId === "string" ? item.productId : "";
+      const quantity = Number(item.quantity);
+      const unitPrice = Number(item.unitPrice);
+      if (!isId(productId) || seenProducts.has(productId) || !Number.isInteger(quantity) || quantity < 1 || !Number.isFinite(unitPrice) || unitPrice < 0) {
+        return response.status(400).json({ success: false, message: "Each product must be unique and have a valid quantity and dealer price." });
+      }
+      seenProducts.add(productId);
+    }
+    const reserved: { productId: Types.ObjectId; quantity: number }[] = [];
+    const items: Row[] = [];
+    let totalAmount = 0;
+    try {
+      for (const line of requestedItems) {
+        const quantity = Number(line.quantity);
+        const unitPrice = Number(line.unitPrice);
+        const product = await Product.findOneAndUpdate(
+          { _id: line.productId, active: { $ne: false }, stockQuantity: { $gte: quantity } },
+          { $inc: { stockQuantity: -quantity } },
+          { new: true },
+        );
+        if (!product) throw new Error("A product is unavailable or does not have enough stock.");
+        reserved.push({ productId: product._id, quantity });
+        totalAmount += unitPrice * quantity;
+        items.push({
+          productId: product._id,
+          name: product.name,
+          sku: product.sku,
+          imageUrl: product.imageUrl,
+          quantity,
+          unitPrice,
+        });
+      }
+      totalAmount = Math.round((totalAmount + Number.EPSILON) * 100) / 100;
+      const amountPaid = Math.round((Number(body.amountPaid ?? 0) + Number.EPSILON) * 100) / 100;
+      if (!Number.isFinite(amountPaid) || amountPaid < 0 || amountPaid > totalAmount) {
+        throw new Error("Amount received must be between zero and the sale total.");
+      }
+      const paymentMethod = typeof body.paymentMethod === "string" && body.paymentMethod
+        ? body.paymentMethod
+        : "CREDIT";
+      if (amountPaid > 0 && !["CASH", "UPI", "BANK_TRANSFER", "CHEQUE"].includes(paymentMethod)) {
+        throw new Error("Choose a valid payment method.");
+      }
+      const payments = amountPaid > 0
+        ? [{ amount: amountPaid, method: paymentMethod, note: "Received at handover" }]
+        : [];
+      const order = await Order.create({
+        orderNumber: `GS-D-${Date.now()}-${randomUUID().replace(/-/g, "").slice(0, 8).toUpperCase()}`,
+        customerType: "DEALER",
+        dealerId: dealer._id,
+        customer: { fullName: dealer.name, phoneNumber: dealer.phoneNumber, email: dealer.email },
+        items,
+        totalAmount,
+        amountPaid,
+        payments,
+        status: "DELIVERED",
+        paymentStatus: amountPaid === 0 ? "PENDING" : amountPaid === totalAmount ? "PAID" : "PARTIALLY_PAID",
+        paymentMethod,
+      });
+      return response.status(201).json({ data: toOrder(order.toObject() as Row) });
+    } catch (error) {
+      await Promise.all(reserved.map((item) => Product.updateOne({ _id: item.productId }, { $inc: { stockQuantity: item.quantity } })));
+      if (error instanceof Error && error.message.startsWith("A product is unavailable")) {
+        return response.status(409).json({ success: false, message: error.message });
+      }
+      if (error instanceof Error && (error.message.startsWith("Amount received") || error.message.startsWith("Choose a valid payment method"))) {
+        return response.status(400).json({ success: false, message: error.message });
+      }
+      throw error;
+    }
+  }
+  if (request.method === "POST" && segments.length === 3 && segments[2] === "payments") {
+    if (!isId(segments[1])) return response.status(400).json({ success: false, message: "Invalid sale." });
+    const body = request.body && typeof request.body === "object" ? request.body as Row : {};
+    const amount = Math.round((Number(body.amount) + Number.EPSILON) * 100) / 100;
+    const method = typeof body.method === "string" ? body.method.trim() : "";
+    const note = typeof body.note === "string" ? body.note.trim() : "";
+    if (!Number.isFinite(amount) || amount <= 0 || !["CASH", "UPI", "BANK_TRANSFER", "CHEQUE"].includes(method)) {
+      return response.status(400).json({ success: false, message: "Enter a positive payment amount and payment method." });
+    }
+    const order = await Order.findOne({ _id: segments[1], customerType: "DEALER" });
+    if (!order) return response.status(404).json({ success: false, message: "Dealer sale not found." });
+    const amountPaid = Number(order.get("amountPaid") ?? 0);
+    const nextAmountPaid = Math.round((amountPaid + amount + Number.EPSILON) * 100) / 100;
+    if (nextAmountPaid > order.totalAmount) {
+      return response.status(400).json({ success: false, message: "Payment cannot exceed the remaining due amount." });
+    }
+    const update = await Order.findOneAndUpdate(
+      { _id: order._id, customerType: "DEALER", updatedAt: order.get("updatedAt") },
+      {
+        $inc: { amountPaid: amount },
+        $push: { payments: { amount, method, note } },
+        $set: { paymentStatus: nextAmountPaid === order.totalAmount ? "PAID" : "PARTIALLY_PAID" },
+      },
+      { new: true },
+    ).populate("dealerId");
+    if (!update) return response.status(409).json({ success: false, message: "This sale changed while recording payment. Refresh and try again." });
+    return response.status(200).json({ data: toOrder(update.toObject() as Row) });
+  }
+  response.setHeader("Allow", "GET, POST");
+  return response.status(405).json({ success: false, message: "Method not allowed." });
+}
+
 export default async function api(request: NextApiRequest, response: NextApiResponse) {
   response.setHeader("Cache-Control", "no-store, max-age=0, must-revalidate");
   response.setHeader("Pragma", "no-cache");
@@ -392,6 +573,8 @@ export default async function api(request: NextApiRequest, response: NextApiResp
     if (resource === "products" || resource === "brands" || resource === "categories") return await handleCatalog(request, response, resource, segments);
     if (resource === "cart") return await handleCart(request, response, segments);
     if (resource === "orders") return await handleOrders(request, response, segments);
+    if (resource === "dealers") return await handleDealers(request, response, segments);
+    if (resource === "dealer-sales") return await handleDealerSales(request, response, segments);
     return response.status(404).json({ success: false, message: "API route not found." });
   } catch (error) {
     return sendError(response, error);

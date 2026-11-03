@@ -9,6 +9,7 @@ import {
   IconBrandYoutube,
   IconBolt,
   IconChevronDown,
+  IconCircleCheck,
   IconDeviceDesktop,
   IconMenu2,
   IconSearch,
@@ -102,6 +103,7 @@ function AppContent() {
   const [cart, setCart] = useState<CartLine[]>([]);
   const [cartBusy, setCartBusy] = useState(true);
   const [cartMessage, setCartMessage] = useState("");
+  const [cartUpdateOpen, setCartUpdateOpen] = useState(false);
   const [adminAuthenticated, setAdminAuthenticated] = useState(false);
   const [adminAuthLoading, setAdminAuthLoading] = useState(true);
   const [socialLinksOpen, setSocialLinksOpen] = useState(false);
@@ -205,11 +207,23 @@ function AppContent() {
     }
   };
 
-  const addToCart = (productId: string, quantity = 1): Promise<void> =>
-    runCartAction(
+  const addToCart = async (
+    productId: string,
+    quantity = 1,
+  ): Promise<void> => {
+    setCartUpdateOpen(false);
+    await runCartAction(
       () => addCartItem(cartId, productId, quantity),
       "Added to your bag.",
     );
+    setCartUpdateOpen(true);
+  };
+
+  useEffect(() => {
+    if (!cartUpdateOpen) return;
+    const timeout = window.setTimeout(() => setCartUpdateOpen(false), 5000);
+    return () => window.clearTimeout(timeout);
+  }, [cartUpdateOpen]);
 
   const removeFromCart = (productId: string): Promise<void> =>
     runCartAction(
@@ -322,15 +336,50 @@ function AppContent() {
                 </span>
                 <span>Login</span>
               </button>
-              <button
-                className="gs-cart-button"
-                onClick={() => go("/order")}
-                aria-label={`Place order, ${cartCount} items in bag`}
-              >
-                <IconShoppingBag size={19} />
-                <span>Order</span>
-                <b>{cartCount}</b>
-              </button>
+              <div className="gs-cart-menu">
+                <button
+                  className={`gs-cart-button${cartUpdateOpen ? " is-updated" : ""}`}
+                  onClick={() => go("/order")}
+                  aria-label={`View cart, ${cartCount} items in bag`}
+                >
+                  <IconShoppingBag size={19} />
+                  <span>Cart</span>
+                  <b>{cartCount}</b>
+                </button>
+                {cartUpdateOpen && (
+                  <div
+                    className="gs-cart-dropdown"
+                    role="status"
+                    aria-label="Cart updated"
+                  >
+                    <div className="gs-cart-dropdown-message">
+                      <IconCircleCheck size={23} aria-hidden="true" />
+                      <span>
+                        <strong>Added to cart</strong>
+                        <small>
+                          {cartCount} {cartCount === 1 ? "item" : "items"} in your cart
+                        </small>
+                      </span>
+                    </div>
+                    <button
+                      className="gs-cart-dropdown-view"
+                      onClick={() => {
+                        setCartUpdateOpen(false);
+                        go("/order");
+                      }}
+                    >
+                      View cart <IconArrowRight size={15} aria-hidden="true" />
+                    </button>
+                    <button
+                      className="gs-cart-dropdown-dismiss"
+                      aria-label="Dismiss cart update"
+                      onClick={() => setCartUpdateOpen(false)}
+                    >
+                      <IconX size={16} aria-hidden="true" />
+                    </button>
+                  </div>
+                )}
+              </div>
               <button
                 className="gs-mobile-toggle"
                 onClick={() => setMobileMenuOpen((open) => !open)}

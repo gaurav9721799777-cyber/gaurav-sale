@@ -37,6 +37,16 @@ Create the first administrator by sending a `POST` request to `/api/auth/bootstr
 
 The endpoint is available only until the first administrator is created. Admin sign-in uses `/api/auth/admin`; passwords are stored as salted scrypt hashes, and admin sessions use signed, HTTP-only cookies.
 
+## Dealer sales
+
+Sign in to the admin panel and open **Dealer sales**. Register the dealer, then create a dealer sale when products are handed over. Each sale records editable dealer prices and deducts the handed-over quantities from stock. You can record an initial payment or leave the balance due, then record later payments from the dealer ledger. The ledger shows each dealer's outstanding balance and can print an invoice showing the total, payments received, and amount due.
+
+Website checkout remains the individual-customer flow and uses the existing retail product prices. Dealer transactions are kept separate from individual customer orders.
+
+## Gmail order confirmations
+
+After an individual checkout order is saved, the app sends an order confirmation to the email address entered at checkout. Email is optional; if the customer leaves it blank, no email can be sent. Configure `GMAIL_USER` and `GMAIL_APP_PASSWORD` in local `.env.local` or the deployment environment. Create a Google App Password for the sending Gmail account (2-Step Verification must be enabled); use the App Password, not the account password. Keep both values server-side and never expose them as `NEXT_PUBLIC_*` variables. If Gmail is not configured or delivery fails, the order remains saved and checkout shows a notification.
+
 ## Commands
 
 - `npm run dev`: start the local development server

@@ -23,7 +23,14 @@ const unwrap = (payload: unknown): OrderRecord => {
     throw new Error(typeof wrapper.message === "string" ? wrapper.message : "The order request was not accepted.");
   }
   const data = wrapper.data ?? wrapper.order ?? payload;
-  return data && typeof data === "object" ? data as OrderRecord : {};
+  return data && typeof data === "object"
+    ? {
+        ...data as OrderRecord,
+        ...(wrapper.emailNotification !== undefined
+          ? { emailNotification: wrapper.emailNotification }
+          : {}),
+      }
+    : {};
 };
 
 export const placeOrder = async (cartId: string, request: PlaceOrderRequest): Promise<OrderRecord> => {

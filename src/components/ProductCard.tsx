@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { IconArrowRight, IconBolt, IconShoppingBag, IconLoader2, IconPlus, IconMinus } from "@tabler/icons-react";
+import { IconArrowRight, IconBolt, IconCheck, IconShoppingBag, IconLoader2, IconPlus, IconMinus } from "@tabler/icons-react";
 import type { Product } from "../data/products";
 import { apiErrorMessage } from "../services/apiError";
 import { animateProductToCart } from "../utils/cartAnimation";
@@ -127,12 +127,12 @@ export default function ProductCard({
         </div>
         <div className="gs-product-bottom">
           <button
-            className="gs-button gs-button-small"
+            className={`gs-button gs-button-small${added ? " is-added" : ""}`}
             onClick={addSelectedQuantity}
             disabled={adding || availableToAdd <= 0}
             aria-busy={adding}
           >
-            {adding ? <><IconLoader2 className="gs-spinner" size={15} /> Adding</> : added ? <><IconShoppingBag size={14} /> Added</> : <><IconShoppingBag size={14} /> Add to bag <IconArrowRight size={13} /></>}
+            {adding ? <><IconLoader2 className="gs-spinner" size={15} /> Adding</> : added ? <><IconCheck size={14} /> Added to cart</> : <><IconShoppingBag size={14} /> Add to bag <IconArrowRight size={13} /></>}
           </button>
         </div>
         {addError && <p className="gs-cart-inline-error" role="alert">{addError}</p>}

@@ -40,7 +40,8 @@ export type RoutePath =
   | "/admin/categories"
   | "/admin/brands"
   | "/admin/customers"
-  | "/admin/orders";
+  | "/admin/orders"
+  | "/admin/dealer-sales";
 
 type AppRoutesProps = {
   path: string;

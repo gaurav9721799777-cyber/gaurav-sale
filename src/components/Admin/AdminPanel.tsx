@@ -76,6 +76,7 @@ import {
 import brandLogo from "../../assets/gs-logo.png";
 import { assetSource } from "../../utils/assetSource";
 import AppLoader from "../AppLoader";
+import DealerSalesSection from "./DealerSalesSection";
 import InfiniteScrollTrigger from "../InfiniteScrollTrigger";
 import { useInfiniteScroll } from "../../hooks/useInfiniteScroll";
 import { apiErrorMessage } from "../../services/apiError";
@@ -87,7 +88,8 @@ type Section =
   | "Categories"
   | "Brands"
   | "Customers"
-  | "Orders";
+  | "Orders"
+  | "Dealer Sales";
 type AdminEntity = Category | Brand;
 type EntityKind = "Category" | "Brand";
 
@@ -111,6 +113,7 @@ const sectionFromRoute = (routePath: string): Section => {
     return (key[0].toUpperCase() + key.slice(1)) as Section;
   if (key === "customers" || key === "orders")
     return (key[0].toUpperCase() + key.slice(1)) as Section;
+  if (key === "dealer-sales") return "Dealer Sales";
   return "Dashboard";
 };
 const orderStatuses: OrderStatus[] = [
@@ -260,7 +263,7 @@ function AdminPanel({
             (order) => order.paymentStatus === paymentStatusFilter,
           );
         }
-        setVisibleOrders(rows);
+        setVisibleOrders(rows.filter((order) => order.raw.customerType !== "DEALER"));
       } catch (error) {
         setOrderError(apiErrorMessage(error, "Could not load orders."));
         setVisibleOrders([]);
@@ -365,33 +368,93 @@ function AdminPanel({
       .includes(orderSearch.toLowerCase()),
   );
   const exportOrders = () => {
+    if (!orders.length) {
+      setNotice("There are no orders to export yet.");
+      return;
+    }
     const columns = [
       "Order ID",
       "Order Number",
-      "Customer Name",
+      "Customer Type",
+      "Customer / Contact Name",
+      "Dealer Business Name",
+      "Phone Number",
       "Email",
       "Order Date",
-      "Amount (INR)",
+      "Street Address",
+      "City",
+      "Postal Code",
+      "Country / Region",
+      "Items",
+      "Total (INR)",
+      "Amount Paid (INR)",
+      "Balance Due (INR)",
+      "Payment Method",
+      "Payment History",
       "Order Status",
       "Payment Status",
     ];
-    const csvValue = (value: string | number) => {
-      const safeValue =
-        typeof value === "string" && ["=", "+", "-", "@"].includes(value[0])
-          ? `'${value}`
-          : String(value);
+    const csvValue = (value: unknown) => {
+      const text = String(value ?? "");
+      const safeValue = /^[\s]*[=+\-@]/.test(text) ? `'${text}` : text;
       return `"${safeValue.replace(/"/g, '""')}"`;
     };
-    const rows = filteredOrders.map((order) => [
-      order.id,
-      order.orderNumber,
-      order.customerName,
-      order.email,
-      order.date,
-      order.amount,
-      orderStatusLabel(order.status),
-      order.paymentStatus.replace(/_/g, " "),
-    ]);
+    const rows = orders.map((order) => {
+      const raw = order.raw;
+      const customer = raw.customer && typeof raw.customer === "object"
+        ? raw.customer as Record<string, unknown>
+        : {};
+      const address = raw.shippingAddress && typeof raw.shippingAddress === "object"
+        ? raw.shippingAddress as Record<string, unknown>
+        : {};
+      const dealer = raw.dealerId && typeof raw.dealerId === "object"
+        ? raw.dealerId as Record<string, unknown>
+        : {};
+      const items = Array.isArray(raw.items) ? raw.items : [];
+      const payments = Array.isArray(raw.payments) ? raw.payments : [];
+      const total = order.amount;
+      const amountPaid = Number(raw.amountPaid ?? (order.paymentStatus === "PAID" ? total : 0)) || 0;
+      const itemSummary = items.map((item) => {
+        if (!item || typeof item !== "object") return "";
+        const line = item as Record<string, unknown>;
+        return `${String(line.name ?? "Product")} x ${Number(line.quantity) || 0} @ ${currency(Number(line.unitPrice) || 0)}`;
+      }).filter(Boolean).join("; ");
+      const paymentSummary = payments.map((payment) => {
+        if (!payment || typeof payment !== "object") return "";
+        const row = payment as Record<string, unknown>;
+        const date = row.receivedAt ? new Date(String(row.receivedAt)).toLocaleDateString("en-IN") : "";
+        return [date, row.method, row.amount !== undefined ? currency(Number(row.amount) || 0) : "", row.note]
+          .filter(Boolean)
+          .join(" ");
+      }).filter(Boolean).join("; ");
+      const phone = String(customer.phoneNumber ?? raw.phoneNumber ?? raw.phone ?? "");
+      const dealerName = String(dealer.businessName ?? raw.dealerBusinessName ?? "");
+      const customerType = raw.customerType === "DEALER" ? "Dealer" : "Individual";
+      const street = String(address.streetAddress ?? address.street ?? "");
+      const orderDate = raw.createdAt ? new Date(String(raw.createdAt)).toLocaleString("en-IN") : order.date;
+      return [
+        order.id,
+        order.orderNumber,
+        customerType,
+        order.customerName,
+        dealerName,
+        phone,
+        order.email,
+        orderDate,
+        street,
+        address.city,
+        address.postalCode,
+        address.countryRegion,
+        itemSummary,
+        total,
+        amountPaid,
+        Math.max(0, total - amountPaid),
+        raw.paymentMethod,
+        paymentSummary,
+        orderStatusLabel(order.status),
+        order.paymentStatus.replace(/_/g, " "),
+      ];
+    });
     const csv = [columns, ...rows]
       .map((row) => row.map(csvValue).join(","))
       .join("\r\n");
@@ -402,15 +465,17 @@ function AdminPanel({
     );
     const link = document.createElement("a");
     link.href = url;
-    link.download = `gaurav-sales-orders-${new Date().toISOString().slice(0, 10)}.csv`;
+    link.download = `gaurav-sales-all-orders-${new Date().toISOString().slice(0, 10)}.csv`;
     document.body.appendChild(link);
     link.click();
     link.remove();
     URL.revokeObjectURL(url);
+    setNotice(`Exported ${orders.length} orders, including individual and dealer sales.`);
   };
   const customersFromOrders = Array.from(
     orders
       .reduce((map, order) => {
+        if (order.raw.customerType === "DEALER") return map;
         const key = order.email || order.customerName;
         const current = map.get(key) || {
           name: order.customerName,
@@ -545,6 +610,7 @@ function AdminPanel({
       Brands: "/admin/brands",
       Customers: "/admin/customers",
       Orders: "/admin/orders",
+      "Dealer Sales": "/admin/dealer-sales",
     };
     navigateRoute(route[next]);
   };
@@ -722,6 +788,12 @@ function AdminPanel({
             active={section === "Orders"}
             onClick={() => navigate("Orders")}
           />
+          <NavButton
+            icon={<IconUsers />}
+            label="Dealer sales"
+            active={section === "Dealer Sales"}
+            onClick={() => navigate("Dealer Sales")}
+          />
         </nav>
         <div className="admin-sidebar-bottom">
           <div className="admin-user">
@@ -853,6 +925,9 @@ function AdminPanel({
                 onRemove={removeProduct}
               />
             </>
+          )}
+          {section === "Dealer Sales" && (
+            <DealerSalesSection onNotice={setNotice} onProductsChanged={refreshProducts} />
           )}
           {(section === "Categories" || section === "Brands") && (
             <>
@@ -2091,8 +2166,8 @@ function OrdersSection({
         title="Orders"
         description="Track customer orders and their fulfillment status."
         action={
-          <button className="admin-secondary-button" onClick={onExport}>
-            <IconTruck size={17} /> Export Excel
+          <button className="admin-secondary-button" type="button" onClick={onExport}>
+            <IconTruck size={17} /> Export CSV
           </button>
         }
       />

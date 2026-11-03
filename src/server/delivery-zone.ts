@@ -1,6 +1,6 @@
 const shopLocation = { latitude: 26.0992797, longitude: 83.2317422 };
 
-const deliveryRadiusKm = 4;
+const deliveryRadiusKm = 10;
 const earthRadiusKm = 6371.0088;
 
 export type Coordinates = { latitude: number; longitude: number };
@@ -32,6 +32,6 @@ export function assertWithinDeliveryZone(location: Coordinates) {
 
   const distance = distanceInKm(shopLocation, location);
   if (distance > deliveryRadiusKm) {
-    throw new DeliveryZoneError("Delivery is currently available only within 4 km of our shop.");
+    throw new DeliveryZoneError("Delivery is currently available only within 10 km of our shop.");
   }
 }

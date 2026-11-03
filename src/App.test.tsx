@@ -159,7 +159,7 @@ test("renders the responsive storefront header and category-led homepage", async
     screen.getByRole("button", { name: /log in to the admin dashboard/i }),
   ).toBeInTheDocument();
   expect(
-    screen.getByRole("button", { name: /place order, 0 items in bag/i }),
+    screen.getByRole("button", { name: /view cart, 0 items in bag/i }),
   ).toBeInTheDocument();
   expect(
     screen.getByRole("heading", { name: /meet amrit rai/i }),
@@ -211,3 +211,38 @@ test("searches the product catalog from the global header", async () => {
     ).not.toBeInTheDocument();
   });
 });
+
+test("confirms a product was added and offers a direct link to the cart", async () => {
+  renderApp();
+
+  fireEvent.change(screen.getByRole("searchbox", { name: /search products/i }), {
+    target: { value: "Microtek battery" },
+  });
+  fireEvent.click(screen.getByRole("button", { name: /^search$/i }));
+
+  expect(
+    await screen.findByRole("heading", {
+      name: /search results for "microtek battery"/i,
+    }),
+  ).toBeInTheDocument();
+
+  fireEvent.click(
+    await screen.findByRole("button", { name: /add to bag/i }),
+  );
+
+  expect(
+    await screen.findByRole("button", { name: /added to cart/i }),
+  ).toBeInTheDocument();
+  expect(
+    screen.queryByText("Product added to your cart."),
+  ).not.toBeInTheDocument();
+  expect(screen.getByRole("status", { name: /cart updated/i })).toHaveTextContent(
+    /added to cart/i,
+  );
+  expect(
+    screen.getByRole("button", { name: /view cart, 0 items in bag/i }),
+  ).toHaveClass("is-updated");
+  expect(
+    screen.getByRole("button", { name: /^view cart$/i }),
+  ).toBeInTheDocument();
+}, 20000);

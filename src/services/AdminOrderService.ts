@@ -3,6 +3,7 @@ import axiosInstance from "../interceptor/AxiosInterceptor";
 export type OrderStatus = "PENDING" | "CONFIRMED" | "PROCESSING" | "SHIPPED" | "OUT_FOR_DELIVERY" | "DELIVERED" | "CANCELLED";
 export enum PaymentStatus {
   PENDING = "PENDING",
+  PARTIALLY_PAID = "PARTIALLY_PAID",
   PAID = "PAID",
   REFUNDED = "REFUNDED",
 }

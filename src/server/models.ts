@@ -29,17 +29,31 @@ const cartSchema = new Schema({
 
 const orderSchema = new Schema({
   orderNumber: { type: String, required: true, unique: true },
+  customerType: { type: String, enum: ["INDIVIDUAL", "DEALER"], default: "INDIVIDUAL" },
+  dealerId: { type: Schema.Types.ObjectId, ref: "Dealer", default: null },
   customer: {
     fullName: { type: String, required: true }, email: { type: String, default: "" }, phoneNumber: { type: String, required: true },
   },
   shippingAddress: {
-    streetAddress: { type: String, required: true }, city: { type: String, required: true }, postalCode: { type: String, required: true }, countryRegion: { type: String, required: true }, deliveryInstructions: { type: String, default: "" },
+    streetAddress: { type: String, default: "" }, city: { type: String, default: "" }, postalCode: { type: String, default: "" }, countryRegion: { type: String, default: "" }, deliveryInstructions: { type: String, default: "" },
   },
   items: [{ productId: Schema.Types.ObjectId, name: String, sku: String, imageUrl: String, quantity: Number, unitPrice: Number }],
   totalAmount: { type: Number, required: true },
+  amountPaid: { type: Number, default: 0, min: 0 },
+  payments: [{ amount: { type: Number, required: true, min: 0 }, method: { type: String, required: true }, note: { type: String, default: "" }, receivedAt: { type: Date, default: Date.now } }],
   status: { type: String, enum: ["PENDING", "CONFIRMED", "PROCESSING", "SHIPPED", "OUT_FOR_DELIVERY", "DELIVERED", "CANCELLED"], default: "PENDING" },
-  paymentStatus: { type: String, enum: ["PENDING", "PAID", "REFUNDED"], default: "PENDING" },
+  paymentStatus: { type: String, enum: ["PENDING", "PARTIALLY_PAID", "PAID", "REFUNDED"], default: "PENDING" },
   paymentMethod: { type: String, default: "CASH_ON_DELIVERY" },
+}, { timestamps: true });
+
+const dealerSchema = new Schema({
+  name: { type: String, required: true, trim: true },
+  businessName: { type: String, required: true, trim: true },
+  phoneNumber: { type: String, required: true, trim: true, unique: true },
+  email: { type: String, default: "", trim: true, lowercase: true },
+  gstin: { type: String, default: "", trim: true, uppercase: true },
+  address: { type: String, default: "", trim: true },
+  active: { type: Boolean, default: true },
 }, { timestamps: true });
 
 const adminUserSchema = new Schema({
@@ -57,6 +71,7 @@ export const Brand = models.Brand || model("Brand", entitySchema);
 export const Product = models.Product || model("Product", productSchema);
 export const Cart = models.Cart || model("Cart", cartSchema);
 export const Order = models.Order || model("Order", orderSchema);
+export const Dealer = models.Dealer || model("Dealer", dealerSchema);
 export const AdminUser = models.AdminUser || model("AdminUser", adminUserSchema);
 export const AdminBootstrap = models.AdminBootstrap || model("AdminBootstrap", adminBootstrapSchema);
  
@@ -66,6 +81,7 @@ export const databaseModels = [
   Category,
   Cart,
   Order,
+  Dealer,
   AdminUser,
   AdminBootstrap,
 ];

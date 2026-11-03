@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { IconArrowRight, IconShoppingBag } from "@tabler/icons-react";
+import { IconArrowRight, IconCheck, IconShoppingBag } from "@tabler/icons-react";
 import {
   productsApi,
   resolveProductImageUrl,
@@ -37,18 +37,20 @@ function ProductPage({
   const [serverIssue, setServerIssue] = useState(false);
   const [retryCount, setRetryCount] = useState(0);
   const [addingToCart, setAddingToCart] = useState(false);
+  const [addedToCart, setAddedToCart] = useState(false);
   const [cartFeedback, setCartFeedback] = useState("");
   const [cartFeedbackIsError, setCartFeedbackIsError] = useState(false);
 
   const addProductToCart = async (source: HTMLButtonElement) => {
     if (!product) return;
     setAddingToCart(true);
+    setAddedToCart(false);
     setCartFeedback("");
     setCartFeedbackIsError(false);
     try {
       await onAdd(product.id);
       animateProductToCart(source);
-      setCartFeedback("Added to your bag.");
+      setAddedToCart(true);
     } catch (addError) {
       setCartFeedback(
         apiErrorMessage(addError, "Could not add this item. Please try again."),
@@ -72,6 +74,7 @@ function ProductPage({
     let current = true;
     setProduct(null);
     setImageFailed(false);
+    setAddedToCart(false);
     setCartFeedback("");
     setLoading(true);
     setError("");
@@ -199,28 +202,30 @@ function ProductPage({
                   disabled={product.stock <= 0 || addingToCart}
                   aria-busy={addingToCart}
                 >
-                  <IconShoppingBag size={16} />{" "}
+                  {addedToCart ? (
+                    <IconCheck size={16} />
+                  ) : (
+                    <IconShoppingBag size={16} />
+                  )}{" "}
                   <span>
                     {addingToCart
                       ? "Adding…"
+                      : addedToCart && product.stock > 0
+                        ? "Added to cart"
                       : product.stock > 0
                         ? "Add to bag"
                         : "Out of stock"}
                   </span>{" "}
-                  <IconArrowRight size={15} />
+                  {!addedToCart && <IconArrowRight size={15} />}
                 </button>
                 <a className="storefront-cta" href="/product">
                   Continue browsing <span aria-hidden="true">→</span>
                 </a>
               </div>
-              {cartFeedback && (
+              {cartFeedbackIsError && cartFeedback && (
                 <p
-                  className={
-                    cartFeedbackIsError
-                      ? "gs-cart-inline-error"
-                      : "storefront-cart-success"
-                  }
-                  role={cartFeedbackIsError ? "alert" : "status"}
+                  className="gs-cart-inline-error"
+                  role="alert"
                 >
                   {cartFeedback}
                 </p>

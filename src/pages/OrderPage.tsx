@@ -438,6 +438,10 @@ export default function OrderPage({
   const placedOrderStatus = order
     ? String(order.orderStatus ?? order.status ?? "")
     : "";
+  const emailNotification =
+    order?.emailNotification && typeof order.emailNotification === "object"
+      ? order.emailNotification as Record<string, unknown>
+      : null;
 
   return (
     <section className="gs-page gs-container">
@@ -469,6 +473,11 @@ export default function OrderPage({
                 Thanks for choosing Gaurav Sales. We’ve received your order and
                 will contact you to confirm delivery.
               </p>
+              {typeof emailNotification?.message === "string" && (
+                <p className="gs-order-email-notice" role="status">
+                  {emailNotification.message}
+                </p>
+              )}
               <div className="gs-order-confirmation-details">
                 <>
                   {orderNumber && (
