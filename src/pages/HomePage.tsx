@@ -38,9 +38,9 @@ import {
 import microtekBanner from "../assets/microtek-home-banner.png";
 import vGuardBanner from "../assets/v-guard-home-banner.png";
 import sfSonicBanner from "../assets/sf-sonic-home-banner.png";
-import microtekLogo from "../assets/microtek-logo.png";
-import vGuardLogo from "../assets/v-guard-logo.png";
-import sfSonicLogo from "../assets/sf-sonic-logo.png";
+import microtekLogo from "../assets/microtek-trusted-logo.png";
+import vGuardLogo from "../assets/v-guard-trusted-logo.png";
+import sfSonicLogo from "../assets/sf-sonic-trusted-logo.png";
 import founderPortrait from "../assets/amit-rai-home.png";
 import { assetSource } from "../utils/assetSource";
 
@@ -281,8 +281,10 @@ export default function HomePage({ navigate, onAdd, cart }: HomePageProps) {
             <span className="gs-eyebrow">THE PEOPLE BEHIND GAURAV SALES</span>
             <h2>Meet Amrit Rai.</h2>
             <p>
-              Personal guidance, dependable products, and thoughtful support to
-              help every home find the right backup power.
+              Amrit Rai believes choosing backup power should feel personal,
+              not overwhelming. His focus is on helping families understand
+              their options and feel supported from the first question through
+              delivery.
             </p>
             <button
               className="gs-text-button"

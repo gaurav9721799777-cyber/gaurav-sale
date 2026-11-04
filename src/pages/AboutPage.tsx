@@ -82,9 +82,16 @@ export default function AboutPage({ navigate }: AboutPageProps) {
           <span className="gs-eyebrow">A PERSONAL APPROACH</span>
           <h2 id="gs-about-founder-heading">Amrit Rai</h2>
           <p>
-            At Gaurav Sales, Amrit Rai is committed to making the search for a
-            dependable inverter or battery feel clear, personal, and supported
-            from the first question through delivery.
+            At Gaurav Sales, Amrit Rai believes choosing backup power should
+            start with understanding what a home needs. He is committed to
+            making inverter and battery options easier to explore, so customers
+            can make a choice that feels right for their everyday life.
+          </p>
+          <p>
+            His personal approach is to make the process feel clear and
+            supportive—from the first questions about products to understanding
+            delivery and after-sales support. The goal is for every customer to
+            feel informed and confident along the way.
           </p>
         </div>
       </section>

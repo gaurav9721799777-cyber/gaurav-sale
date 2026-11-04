@@ -167,6 +167,9 @@ test("renders the responsive storefront header and category-led homepage", async
   expect(
     screen.getByRole("heading", { name: /start with what you need/i }),
   ).toBeInTheDocument();
+  expect(screen.getByRole("img", { name: "Microtek logo" })).toBeInTheDocument();
+  expect(screen.getByRole("img", { name: "V-Guard logo" })).toBeInTheDocument();
+  expect(screen.getByRole("img", { name: "SF Sonic logo" })).toBeInTheDocument();
 
   const bannerControls = screen.getAllByRole("button", {
     name: /show banner/i,
