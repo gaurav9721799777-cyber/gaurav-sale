@@ -1,5 +1,5 @@
 import React, { FormEvent, useEffect, useMemo, useState } from "react";
-import { IconBuildingStore, IconDownload, IconPlus, IconPrinter, IconReceipt, IconX } from "@tabler/icons-react";
+import { IconBuildingStore, IconDownload, IconPlus, IconPrinter, IconReceipt, IconX } from "../FontAwesomeIcons";
 import {
   createDealer,
   createDealerSale,
@@ -301,8 +301,8 @@ export default function DealerSalesSection({ onNotice, onProductsChanged }: Sect
         .sheet{position:relative;width:min(850px,calc(100% - 40px));min-height:1050px;margin:32px auto;padding:48px 54px;background:#fff;box-shadow:0 12px 40px #18283d18}
         .accent{position:absolute;inset:0 0 auto;height:8px;background:linear-gradient(90deg,#173b76,#3c70b7 65%,#90acd2)}
         .masthead{display:flex;align-items:flex-start;justify-content:space-between;gap:24px;padding-bottom:27px;border-bottom:1px solid var(--line)}
-        .brand{display:flex;align-items:center;gap:14px}.brand img{width:60px;height:60px;object-fit:contain}
-        .brand h1{margin:0;color:var(--blue);font-size:23px;letter-spacing:-.7px}.brand p{margin:4px 0 0;color:var(--muted);font-size:11px}
+        .brand{display:flex;align-items:center;gap:14px}.brand img{width:120px;height:60px;padding:3px;border:1px solid #e8c77d;border-radius:10px;background:#fff;box-shadow:0 7px 18px #18283d24;object-fit:contain}
+        .brand p{margin:0;color:var(--muted);font-size:11px}
         .invoice-heading{text-align:right}.invoice-heading h2{margin:0;color:var(--ink);font-size:25px;letter-spacing:1.6px}
         .invoice-heading p{margin:5px 0 10px;color:var(--muted);font-size:11px}
         .badge{display:inline-block;border:1px solid #d5e0ef;border-radius:20px;padding:5px 10px;background:#f1f5fb;color:var(--blue);font-size:9px;font-weight:700;letter-spacing:.7px}
@@ -334,9 +334,9 @@ export default function DealerSalesSection({ onNotice, onProductsChanged }: Sect
         .signature{width:175px;margin-top:25px;border-top:1px solid #aeb8c6;padding-top:8px;color:#778498;font-size:9px;text-align:center}
         .thank-you{margin-top:26px;color:#718096;font-size:10px;text-align:center}
         @page{size:A4;margin:0} @media print{body{background:#fff}.sheet{width:100%;min-height:0;margin:0;padding:38px 44px;box-shadow:none}.accent{-webkit-print-color-adjust:exact;print-color-adjust:exact}thead th,.badge,.totals,.items tbody tr:nth-child(even){-webkit-print-color-adjust:exact;print-color-adjust:exact}.items tr,.payments tr,.totals,.parties{break-inside:avoid}.footer{margin-top:32px}}
-        @media(max-width:620px){.sheet{width:100%;margin:0;padding:28px 22px}.masthead{gap:12px}.brand img{width:45px;height:45px}.brand h1{font-size:18px}.invoice-heading h2{font-size:19px}.parties{grid-template-columns:1fr;gap:22px}.invoice-info{grid-template-columns:1fr 1fr}.items th,.items td{padding:9px 5px;font-size:9px}.footer{flex-direction:column}.signature{margin-top:12px}}
+        @media(max-width:620px){.sheet{width:100%;margin:0;padding:28px 22px}.masthead{gap:12px}.brand img{width:96px;height:48px}.invoice-heading h2{font-size:19px}.parties{grid-template-columns:1fr;gap:22px}.invoice-info{grid-template-columns:1fr 1fr}.items th,.items td{padding:9px 5px;font-size:9px}.footer{flex-direction:column}.signature{margin-top:12px}}
       </style></head><body><main class="sheet"><div class="accent"></div>
-      <header class="masthead"><div class="brand"><img src="${logoUrl}" alt="Gaurav Sales logo"><div><h1>Gaurav Sales</h1><p>Inverters · Batteries · Solar Power</p></div></div>
+      <header class="masthead"><div class="brand"><img src="${logoUrl}" alt="Store logo"><p>Inverters · Batteries · Solar Power</p></div>
       <div class="invoice-heading"><h2>INVOICE</h2><p>Dealer sales invoice</p><span class="badge ${due === 0 ? "paid" : "due"}">${paymentLabel}</span></div></header>
       <section class="parties"><div class="bill-to"><h4 class="eyebrow">Billed to</h4><h3>${businessName}</h3>
         <p>${dealerName}</p><p class="contact">${safeHtml(sale.customer.phoneNumber)}</p>${dealerAddress}${dealerGstin}</div>

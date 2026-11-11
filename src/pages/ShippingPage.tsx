@@ -1,6 +1,6 @@
 import React from "react";
 import { Button } from "@mantine/core";
-import { IconArrowRight, IconMapPin, IconPackage, IconTruck } from "@tabler/icons-react";
+import { IconArrowRight, IconMapPin, IconPackage, IconTruck } from "../components/FontAwesomeIcons";
 import PageHeading from "../components/PageHeading";
 import type { RoutePath } from "../Route/NextAppRoutes";
 import shippingPageHero from "../assets/shipping-page-hero.jpg";

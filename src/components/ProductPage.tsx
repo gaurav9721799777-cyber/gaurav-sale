@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { IconArrowRight, IconCheck, IconShoppingBag } from "@tabler/icons-react";
+import { IconArrowRight, IconCheck, IconShoppingBag } from "./FontAwesomeIcons";
 import {
   productsApi,
   resolveProductImageUrl,

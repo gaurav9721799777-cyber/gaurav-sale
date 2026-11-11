@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { Button } from "@mantine/core";
-import { IconArrowRight, IconBolt } from "@tabler/icons-react";
+import { IconArrowRight, IconBolt } from "../components/FontAwesomeIcons";
 
 import ProductCard from "../components/ProductCard";
 import PageHeading from "../components/PageHeading";

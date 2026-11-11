@@ -5,7 +5,7 @@ import {
   IconBolt,
   IconHeart,
   IconShieldCheck,
-} from "@tabler/icons-react";
+} from "../components/FontAwesomeIcons";
 import PageHeading from "../components/PageHeading";
 import type { RoutePath } from "../Route/NextAppRoutes";
 import premiumBrandsBanner from "../assets/premium-brands-home-banner.png";

@@ -4,7 +4,7 @@
   justify-content: center;
   gap: 15px;
   color: #28364b;
-  font-family: "DM Sans", sans-serif;
+  font-family: var(--font-body);
 }
 
 .gs-app-loader-screen {
@@ -18,18 +18,18 @@
 
 .gs-app-loader-section { min-height: 52vh; padding: 45px 20px; }
 .gs-app-loader-inline { justify-content: flex-start; min-height: 48px; gap: 10px; }
-.gs-app-loader-emblem { position: relative; display: grid; width: 58px; height: 58px; flex: 0 0 auto; place-items: center; border: 1px solid #e5e0fc; border-radius: 18px; background: #fff; box-shadow: 0 10px 30px #604bb51b; }
-.gs-app-loader-emblem::after { position: absolute; inset: -5px; border: 2px solid transparent; border-top-color: #765ce6; border-right-color: #a89af2; border-radius: 22px; animation: gs-loader-spin .9s linear infinite; content: ""; }
-.gs-app-loader-emblem img { width: 42px; height: 42px; border-radius: 12px; object-fit: contain; }
+.gs-app-loader-emblem { position: relative; display: grid; width: 112px; height: 62px; flex: 0 0 auto; place-items: center; border: 1px solid #e8c77d; border-radius: 12px; background: #fff; box-shadow: 0 10px 30px #604bb51b; }
+.gs-app-loader-emblem::after { position: absolute; inset: -5px; border: 2px solid transparent; border-top-color: #765ce6; border-right-color: #a89af2; border-radius: 16px; animation: gs-loader-spin .9s linear infinite; content: ""; }
+.gs-app-loader-emblem img { width: 108px; height: 54px; border-radius: 8px; object-fit: contain; }
 .gs-app-loader-copy { display: grid; gap: 9px; min-width: 155px; }
-.gs-app-loader-copy strong { color: #37344e; font: 700 12px/1.2 "Plus Jakarta Sans", sans-serif; letter-spacing: .1px; }
+.gs-app-loader-copy strong { color: #37344e; font: 700 12px/1.2 var(--font-heading); letter-spacing: .1px; }
 .gs-app-loader-track { display: block; width: 155px; height: 3px; overflow: hidden; border-radius: 8px; background: #e9e6f6; }
 .gs-app-loader-track i { display: block; width: 42%; height: 100%; border-radius: inherit; background: linear-gradient(90deg, #765ce6, #45bbb3); animation: gs-loader-progress 1.15s ease-in-out infinite; }
-.gs-app-loader-inline .gs-app-loader-emblem { width: 32px; height: 32px; border-radius: 10px; }
+.gs-app-loader-inline .gs-app-loader-emblem { width: 68px; height: 38px; border-radius: 9px; }
 .gs-app-loader-inline .gs-app-loader-emblem::after { inset: -3px; border-radius: 12px; border-width: 1.5px; }
-.gs-app-loader-inline .gs-app-loader-emblem img { width: 24px; height: 24px; border-radius: 7px; }
+.gs-app-loader-inline .gs-app-loader-emblem img { width: 64px; height: 32px; border-radius: 6px; }
 .gs-app-loader-inline .gs-app-loader-copy { gap: 5px; min-width: 120px; }
-.gs-app-loader-inline .gs-app-loader-copy strong { color: #738198; font: 600 10px "DM Sans", sans-serif; }
+.gs-app-loader-inline .gs-app-loader-copy strong { color: #738198; font: 600 10px var(--font-body); }
 .gs-app-loader-inline .gs-app-loader-track { width: 120px; height: 2px; }
 
 @keyframes gs-loader-spin { to { transform: rotate(360deg); } }

@@ -31,7 +31,7 @@ import {
   IconTruck,
   IconUsers,
   IconX,
-} from "@tabler/icons-react";
+} from "../FontAwesomeIcons";
 import {
   createCategory,
   getCategories,
@@ -740,11 +740,8 @@ function AdminPanel({
           <img
             className="admin-brand-logo"
             src={assetSource(brandLogo)}
-            alt="Gaurav Sales logo"
+            alt="Store logo"
           />
-          <span className="admin-brand-word">
-            Gaurav<span>Sales</span>
-          </span>
         </a>
         <div className="admin-side-caption">WORKSPACE</div>
         <nav className="admin-nav" aria-label="Admin navigation">
@@ -1166,9 +1163,9 @@ function Dashboard({
             <img
               className="welcome-brand-logo"
               src={assetSource(brandLogo)}
-              alt="Gaurav Sales logo"
+              alt="Store logo"
             />
-            Welcome to Gaurav Sales
+            Store overview
           </h1>
           <p>Here’s what’s happening with your store today.</p>
         </div>

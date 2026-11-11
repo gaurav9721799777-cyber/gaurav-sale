@@ -3,9 +3,34 @@
 @tailwind utilities;
 
 @layer base {
+  :root {
+    --font-body: "Exo", "Segoe UI", sans-serif;
+    --font-heading: "Exo", "Segoe UI", sans-serif;
+    font-family: var(--font-body);
+    font-synthesis: none;
+    font-kerning: normal;
+    font-optical-sizing: auto;
+    text-rendering: optimizeLegibility;
+  }
+
   html { scroll-behavior: smooth; }
-  body { margin: 0; font-family: 'DM Sans', sans-serif; -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
-  button, input, textarea { font: inherit; }
+  body {
+    margin: 0;
+    color: #202b3c;
+    font-family: var(--font-body);
+    font-size: 16px;
+    font-weight: 400;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+  h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-heading);
+    font-weight: 700;
+    line-height: 1.2;
+    letter-spacing: -0.03em;
+  }
+  button, input, select, textarea { font-family: var(--font-body); }
   *, *::before, *::after { box-sizing: border-box; }
 }
 

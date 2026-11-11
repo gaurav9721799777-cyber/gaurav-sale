@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { IconArrowRight, IconBolt, IconCheck, IconShoppingBag, IconLoader2, IconPlus, IconMinus } from "@tabler/icons-react";
+import { IconArrowRight, IconBolt, IconCheck, IconShoppingBag, IconLoader2, IconPlus, IconMinus } from "./FontAwesomeIcons";
 import type { Product } from "../data/products";
 import { apiErrorMessage } from "../services/apiError";
 import { animateProductToCart } from "../utils/cartAnimation";

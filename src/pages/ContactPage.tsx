@@ -4,15 +4,20 @@ import {
   IconBrandFacebook,
   IconBrandInstagram,
   IconBrandYoutube,
+  IconBrandWhatsapp,
   IconMail,
   IconMapPin,
   IconPhone,
-} from "@tabler/icons-react";
+} from "../components/FontAwesomeIcons";
 import PageHeading from "../components/PageHeading";
-import contactPageHero from "../assets/contact-page-hero.jpg";
+import contactPageHero from "../assets/contact-page-banner.png";
 
 const locationQuery =
   "Tiraha, Mau Rd, beside HP Petrol Pump, Narauli, Azamgarh, Uttar Pradesh 276128";
+const phoneNumber = "+91 97217 99777";
+const phoneHref = "tel:+919721799777";
+const emailAddress = "gauravsales2009@gmail.com";
+const whatsappHref = "https://wa.me/919721799777";
 const mapsUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(locationQuery)}`;
 const embeddedMapUrl = `https://www.google.com/maps?q=${encodeURIComponent(locationQuery)}&output=embed`;
 
@@ -53,7 +58,7 @@ export default function ContactPage() {
             </span>
             <span>
               <strong>Phone</strong>
-              <a href="tel:+919721799777">097217 99777</a>
+              <a href={phoneHref}>{phoneNumber}</a>
             </span>
           </div>
           <div className="gs-contact-option">
@@ -62,8 +67,19 @@ export default function ContactPage() {
             </span>
             <span>
               <strong>Email</strong>
-              <a href="mailto:gauravsales2009@gmail.com">
-                gauravsales2009@gmail.com
+              <a href={`mailto:${emailAddress}`}>
+                {emailAddress}
+              </a>
+            </span>
+          </div>
+          <div className="gs-contact-option">
+            <span className="gs-contact-icon gs-contact-icon-whatsapp">
+              <IconBrandWhatsapp />
+            </span>
+            <span>
+              <strong>WhatsApp</strong>
+              <a href={whatsappHref} target="_blank" rel="noreferrer">
+                {phoneNumber}
               </a>
             </span>
           </div>

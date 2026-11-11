@@ -8,7 +8,7 @@ import {
   IconLock,
   IconMail,
   IconShieldCheck,
-} from "@tabler/icons-react";
+} from "../FontAwesomeIcons";
 import brandLogo from "../../assets/gs-logo.png";
 import { assetSource } from "../../utils/assetSource";
 
@@ -49,10 +49,7 @@ export default function AdminLogin({ onLogin }: { onLogin: () => void }) {
         <div className="admin-login-orb admin-login-orb-one" />
         <div className="admin-login-orb admin-login-orb-two" />
         <div className="admin-login-brand">
-          <img src={assetSource(brandLogo)} alt="Gaurav Sales logo" />
-          <span>
-            Gaurav <strong>Sales</strong>
-          </span>
+          <img src={assetSource(brandLogo)} alt="Store logo" />
         </div>
         <div className="admin-login-brand-copy">
           <span className="admin-login-kicker">
@@ -77,8 +74,7 @@ export default function AdminLogin({ onLogin }: { onLogin: () => void }) {
         </Link>
         <form className="admin-login-form" onSubmit={submit}>
           <div className="admin-login-mobile-brand">
-            <img src={assetSource(brandLogo)} alt="" />
-            <strong>Gaurav Sales</strong>
+            <img src={assetSource(brandLogo)} alt="Store logo" />
           </div>
           <span className="admin-login-form-kicker">WELCOME BACK</span>
           <h2>Sign in to your account</h2>

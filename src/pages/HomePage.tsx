@@ -10,7 +10,7 @@ import {
   IconPlug,
   IconShieldCheck,
   IconTruck,
-} from "@tabler/icons-react";
+} from "../components/FontAwesomeIcons";
 import ProductCard from "../components/ProductCard";
 import ServerIssueState from "../components/ServerIssueState";
 import {
@@ -376,7 +376,7 @@ export default function HomePage({ navigate, onAdd, cart }: HomePageProps) {
                         className="gs-category-icon-circle"
                         aria-hidden="true"
                       >
-                        <CategoryIcon size={34} stroke={1.7} />
+                        <CategoryIcon size={34} />
                       </span>
                     </span>
                     <span className="gs-category-copy">

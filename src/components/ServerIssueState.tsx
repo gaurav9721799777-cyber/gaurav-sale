@@ -3,7 +3,7 @@ import {
   IconHome,
   IconRefresh,
   IconServer,
-} from "@tabler/icons-react";
+} from "./FontAwesomeIcons";
 
 type ServerIssueStateProps = {
   message: string;
@@ -25,7 +25,7 @@ export default function ServerIssueState({
       <div className="gs-server-issue-art" aria-hidden="true">
         <span className="gs-server-issue-orbit" />
         <span className="gs-server-issue-icon">
-          <IconServer size={34} stroke={1.5} />
+          <IconServer size={34} />
         </span>
         <span className="gs-server-issue-status">
           <span />

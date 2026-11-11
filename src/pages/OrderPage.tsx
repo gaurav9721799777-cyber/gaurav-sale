@@ -9,7 +9,7 @@ import {
   IconShoppingBag,
   IconTruck,
   IconTrash,
-} from "@tabler/icons-react";
+} from "../components/FontAwesomeIcons";
 import PageHeading from "../components/PageHeading";
 import AppLoader from "../components/AppLoader";
 import {

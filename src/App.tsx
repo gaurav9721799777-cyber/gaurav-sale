@@ -16,7 +16,7 @@ import {
   IconShieldCheck,
   IconShoppingBag,
   IconX,
-} from "@tabler/icons-react";
+} from "./components/FontAwesomeIcons";
 
 import brandLogo from "./assets/gs-logo.png";
 import { assetSource } from "./utils/assetSource";
@@ -296,13 +296,9 @@ function AppContent() {
             <button
               className="gs-brand"
               onClick={() => go("/")}
-              aria-label="Gaurav Sales home"
+              aria-label="Home"
             >
-              <img src={assetSource(brandLogo)} alt="Gaurav Sales" />
-              <span>
-                Gaurav Sales
-                <small>INVERTERS &amp; SOLAR POWER</small>
-              </span>
+              <img src={assetSource(brandLogo)} alt="Store logo" />
             </button>
             <form
               className="gs-header-search"
@@ -638,12 +634,7 @@ function AppContent() {
 
             <div className="gs-footer-brand">
               <button className="gs-brand" onClick={() => go("/")}>
-                <img src={assetSource(brandLogo)} alt="Gaurav Sales" />
-
-                <span>
-                  Gaurav Sales
-                  <small>INVERTERS &amp; SOLAR POWER</small>
-                </span>
+                <img src={assetSource(brandLogo)} alt="Store logo" />
               </button>
 
               <p>

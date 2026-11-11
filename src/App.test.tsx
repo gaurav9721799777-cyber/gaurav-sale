@@ -150,8 +150,14 @@ test("renders the responsive storefront header and category-led homepage", async
   renderApp();
 
   expect(
-    screen.getByRole("button", { name: /gaurav sales home/i }),
+    screen.getByRole("button", { name: "Home" }),
   ).toBeInTheDocument();
+  expect(
+    screen.getByRole("button", { name: "Home" }).querySelector("img"),
+  ).toHaveAttribute("alt", "Store logo");
+  expect(screen.getByRole("button", { name: "Home" })).not.toHaveTextContent(
+    /Gaurav Sales/i,
+  );
   expect(
     screen.getByRole("searchbox", { name: /search products/i }),
   ).toBeInTheDocument();

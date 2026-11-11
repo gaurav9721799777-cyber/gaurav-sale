@@ -1,6 +1,6 @@
 import React from "react";
 import { Accordion, Button } from "@mantine/core";
-import { IconArrowRight, IconBolt } from "@tabler/icons-react";
+import { IconArrowRight, IconBolt } from "../components/FontAwesomeIcons";
 import PageHeading from "../components/PageHeading";
 import type { RoutePath } from "../Route/NextAppRoutes";
 import faqPageHero from "../assets/faq-page-hero.jpg";
